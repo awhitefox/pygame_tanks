@@ -1,6 +1,8 @@
 import pygame
 from tanks.constants import *
 import tanks.grid as grid
+from tanks.load import load_level
+
 
 pygame.init()
 screen = pygame.display.set_mode(SCREEN_SIZE)

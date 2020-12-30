@@ -10,16 +10,16 @@ class GridSprite(pygame.sprite.Sprite):
 
 
 class ConcreteWall(GridSprite):
-    pass
+    Char = "#"
 
 
 class BrickWall(GridSprite):
-    pass
+    Char = "%"
 
 
 class Bush(GridSprite):
-    pass
+    Char = "*"
 
 
 class Water(GridSprite):
-    pass
+    Char = "~"
