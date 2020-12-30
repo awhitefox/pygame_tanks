@@ -35,11 +35,3 @@ def load_level(filename, group: pygame.sprite.Group):
     __load_sprites(level, group)
     return 1
 
-
-def create_random_level(filename):
-    with open(f"levels/{filename}", "w") as f:
-        for i in range(32):
-            f.write("".join([str(random.randint(0, 4)) for _ in range(32)]))
-            f.write("\n")
-    return 1
-
