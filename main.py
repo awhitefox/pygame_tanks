@@ -1,7 +1,7 @@
 import pygame
 from tanks.constants import *
 import tanks.grid as grid
-from tanks.load import load_level, create_random_level
+from tanks.load import load_level
 
 
 pygame.init()
