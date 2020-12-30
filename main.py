@@ -16,7 +16,6 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    load_level('test.txt', all_sprites)    # загрузка лвла
     delta_time = clock.tick() / 1000
     all_sprites.update(delta_time)
     all_sprites.draw(screen)
