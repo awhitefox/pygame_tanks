@@ -2,7 +2,6 @@ import random
 import pygame.sprite
 import os
 from tanks.sprites import BrickWall, Bush, ConcreteWall, Water
-from tanks.constants import *
 
 
 def __load_image(name):
@@ -16,16 +15,16 @@ def __load_image(name):
 def __load_sprites(level, group: pygame.sprite.Group):
     for row in range(len(level)):
         for col in range(len(level[row])):
-            if level[row][col] == str(BRICK):
+            if level[row][col] == str(BrickWall.Id):
                 BrickWall(col, row, group)
                 BrickWall.image = __load_image("brick.png")
-            if level[row][col] == str(BUSH):
+            if level[row][col] == str(Bush.Id):
                 Bush(col, row, group)
                 Bush.image = __load_image("bush.png")
-            if level[row][col] == str(CONCRETE):
+            if level[row][col] == str(ConcreteWall.Id):
                 ConcreteWall(col, row, group)
                 ConcreteWall.image = __load_image("concrete.png")
-            if level[row][col] == str(WATER):
+            if level[row][col] == str(Water.Id):
                 Water(col, row, group)
                 Water.image = __load_image("water.png")
     return 1
