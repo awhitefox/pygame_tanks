@@ -24,6 +24,6 @@ def __load_sprites(level, group: pygame.sprite.Group):
 
 
 def load_level(filename, group: pygame.sprite.Group):
-    level = [list(line.rstrip('\n')) for line in open(f"levels/{filename}")]
+    level = [list(line.rstrip('\n')) for line in open(os.path.join('levels', filename))]
     __load_sprites(level, group)
     return 1
