@@ -10,7 +10,6 @@ all_sprites = pygame.sprite.Group()
 clock = pygame.time.Clock()
 
 running = True
-create_random_level('test.txt')   # создание рандомной структуры лвла
 while running:
     screen.fill((116, 116, 116))  # gray
     pygame.draw.rect(screen, 'black', grid.get_rect())
