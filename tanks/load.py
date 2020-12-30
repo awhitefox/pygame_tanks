@@ -6,8 +6,6 @@ from tanks.sprites import BrickWall, Bush, ConcreteWall, Water
 
 def __load_image(name):
     fullname = os.path.join('data', name)
-    if not os.path.isfile(fullname):
-        raise Exception(f"Файл с изображением '{fullname}' не найден")
     image = pygame.image.load(fullname)
     return image
 
