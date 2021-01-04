@@ -8,6 +8,7 @@ pygame.init()
 screen = pygame.display.set_mode(SCREEN_SIZE)
 all_sprites = pygame.sprite.Group()
 clock = pygame.time.Clock()
+load_level(input(), all_sprites)
 
 running = True
 while running:
