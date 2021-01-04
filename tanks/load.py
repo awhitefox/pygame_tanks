@@ -3,22 +3,16 @@ import os
 from tanks.sprites import BrickWall, Bush, ConcreteWall, Water
 
 
-def __load_image(name):
-    fullname = os.path.join('data', name)
-    image = pygame.image.load(fullname)
-    return image
-
-
 def __load_sprites(level, group: pygame.sprite.Group):
     for row in range(len(level)):
         for col in range(len(level[row])):
-            if level[row][col] == BrickWall.Char:
+            if level[row][col] == BrickWall.char:
                 BrickWall(col, row, group)
-            if level[row][col] == Bush.Char:
+            if level[row][col] == Bush.char:
                 Bush(col, row, group)
-            if level[row][col] == ConcreteWall.Char:
+            if level[row][col] == ConcreteWall.char:
                 ConcreteWall(col, row, group)
-            if level[row][col] == Water.Char:
+            if level[row][col] == Water.char:
                 Water(col, row, group)
     return 1
 
