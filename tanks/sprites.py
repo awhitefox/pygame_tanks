@@ -1,7 +1,8 @@
 import os.path
 import pygame
 from tanks.constants import PIXEL_RATIO
-from tanks.grid import cell_to_screen
+from tanks.grid import cell_to_screen, get_rect
+from tanks.time import delta_time
 
 
 def load_image(name):
@@ -52,3 +53,42 @@ class Water(GridSprite):
     sheet = load_image('water.png')
     char = '~'
     shell_obstacle = False
+
+
+class Shell(SpriteBase):
+    shell_obstacle = True
+    sheet = load_image('shell.png')
+
+    def __init__(self, x, y, vector_x, vector_y, *groups):
+        self.pos = pygame.Vector2(x, y)
+        self.velocity = pygame.Vector2(vector_x, vector_y)
+        super().__init__(x, y, *groups)
+
+        if vector_x < 0:
+            self.image = pygame.transform.rotate(self.image, 90)
+        if vector_y > 0:
+            self.image = pygame.transform.rotate(self.image, 180)
+        if vector_x > 0:
+            self.image = pygame.transform.rotate(self.image, -90)
+
+    def update(self):
+        self.pos += self.velocity / delta_time()
+        self.rect.center = self.pos
+
+        field = get_rect()
+
+        if self.pos.x > field.right or self.pos.x < field.left or self.pos.y > field.bottom or self.pos.y < field.top:
+            self.kill()
+
+        for group in self.groups():
+            for sprite in group:
+                if sprite is not self:
+                    if self.is_collided_with(sprite):
+                        if type(sprite) == Shell:
+                            self.kill()
+                            sprite.kill()
+                        elif sprite.destroyable or sprite.shell_obstacle:
+                            self.kill()
+
+    def is_collided_with(self, sprite):
+        return self.rect.colliderect(sprite.rect)
