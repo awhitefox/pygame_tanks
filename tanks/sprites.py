@@ -56,7 +56,7 @@ class Water(GridSprite):
 
 
 class Shell(SpriteBase):
-    shell_obstacle = True
+    destroyable = True
     sheet = load_image('shell.png')
 
     def __init__(self, x, y, vector_x, vector_y, *groups):
@@ -84,10 +84,10 @@ class Shell(SpriteBase):
             for sprite in group:
                 if sprite is not self:
                     if self.is_collided_with(sprite):
-                        if type(sprite) == Shell or sprite.destroyable:
+                        if sprite.destroyable:
                             self.kill()
                             sprite.kill()
-                        elif sprite.destroyable:
+                        elif sprite.shell_obstacle:
                             self.kill()
 
     def is_collided_with(self, sprite):
