@@ -84,10 +84,10 @@ class Shell(SpriteBase):
             for sprite in group:
                 if sprite is not self:
                     if self.is_collided_with(sprite):
-                        if type(sprite) == Shell:
+                        if type(sprite) == Shell or sprite.destroyable:
                             self.kill()
                             sprite.kill()
-                        elif sprite.destroyable or sprite.shell_obstacle:
+                        elif sprite.destroyable:
                             self.kill()
 
     def is_collided_with(self, sprite):
