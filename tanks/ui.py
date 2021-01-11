@@ -14,10 +14,7 @@ class TextButton(pygame.sprite.Sprite):
         self.rect.center = center_x, center_y
 
     def get_text(self, hover=False):
-        if hover:
-            return f'> {self.text} <'
-        else:
-            return f'  {self.text}  '
+        return f'> {self.text} <' if hover else f'  {self.text}  '
 
     def update(self):
         hover = self.rect.collidepoint(pygame.mouse.get_pos())
