@@ -28,7 +28,7 @@ class Scene:
         self.all_sprites.draw(surface)
 
     def teardown(self):
-        self.all_sprites.remove()
+        self.all_sprites.empty()
 
 
 class Level(Scene):
