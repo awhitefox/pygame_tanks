@@ -4,6 +4,7 @@ from tanks.constants import *
 from tanks.time import tick
 from tanks.load import load_level
 from tanks.sprites import Shell
+import random
 
 
 pygame.init()
@@ -21,7 +22,7 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
-            Shell(pos[0], pos[1], 1, all_sprites)
+            Shell(pos[0], pos[1], random.randint(1, 4), all_sprites)
     tick()
     all_sprites.update()
     all_sprites.draw(screen)
