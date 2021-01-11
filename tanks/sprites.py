@@ -1,7 +1,9 @@
 import os.path
 import pygame
 from tanks.constants import PIXEL_RATIO
-from tanks.grid import cell_to_screen
+from tanks.grid import cell_to_screen, get_rect
+from tanks.time import delta_time
+from tanks.directions import *
 
 
 def load_image(name):
@@ -52,3 +54,57 @@ class Water(GridSprite):
     sheet = load_image('water.png')
     char = '~'
     shell_obstacle = False
+
+
+class Shell(SpriteBase):
+    sheet = load_image('shell.png')
+    speed = 100
+
+    def __init__(self, x, y, direction, *groups):
+        rotate = 0
+        self.vector_velocity = direction_to_vector(direction, self.speed)
+        size = self.sheet.get_size()
+        if direction == WEST:
+            x -= size[0] * 1.5
+            y -= size[1] / 2
+            rotate = 90
+        if direction == NORTH:
+            x -= size[0] / 2
+            y -= size[1]
+        if direction == SOUTH:
+            x -= size[0] / 2
+            rotate = 180
+        if direction == EAST:
+            y -= size[1] / 2
+            rotate = -90
+        self.pos = pygame.Vector2(x, y)
+        super().__init__(x, y, *groups)
+        self.image = pygame.transform.rotate(self.image, rotate)
+
+    def update(self):
+        self.pos += self.vector_velocity * delta_time()
+        self.rect.x = self.pos.x
+        self.rect.y = self.pos.y
+
+        field = get_rect()
+
+        if self.pos.x > field.right or self.pos.x < field.left or self.pos.y > field.bottom or self.pos.y < field.top:
+            self.kill()
+            return
+
+        for group in self.groups():
+            for sprite in group:
+                if sprite is not self:
+                    if self.is_collided_with(sprite):
+                        if isinstance(sprite, GridSprite):
+                            if sprite.destroyable:
+                                sprite.kill()
+                                self.kill()
+                            elif sprite.shell_obstacle:
+                                self.kill()
+                        elif isinstance(sprite, Shell):
+                            self.kill()
+                            sprite.kill()
+
+    def is_collided_with(self, sprite):
+        return self.rect.colliderect(sprite.rect)
