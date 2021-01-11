@@ -56,24 +56,32 @@ class Water(GridSprite):
 
 
 class Shell(SpriteBase):
-    destroyable = True
-    sheet = load_image('shell.png')
+    __img = load_image('shell.png')
+    sheet = __img
 
     def __init__(self, x, y, vector_x, vector_y, *groups):
+        size = self.__img.get_size()
+        if vector_x < 0:
+            x -= size[0] * 1.5
+            y -= size[1] / 2
+            self.sheet = pygame.transform.rotate(self.__img, 90)
+        if vector_y < 0:
+            x -= size[0] / 2
+            y -= size[1]
+        if vector_y > 0:
+            x -= size[0] / 2
+            self.sheet = pygame.transform.rotate(self.__img, 180)
+        if vector_x > 0:
+            y -= size[1] / 2
+            self.sheet = pygame.transform.rotate(self.__img, -90)
         self.pos = pygame.Vector2(x, y)
         self.velocity = pygame.Vector2(vector_x, vector_y)
         super().__init__(x, y, *groups)
 
-        if vector_x < 0:
-            self.image = pygame.transform.rotate(self.image, 90)
-        if vector_y > 0:
-            self.image = pygame.transform.rotate(self.image, 180)
-        if vector_x > 0:
-            self.image = pygame.transform.rotate(self.image, -90)
-
     def update(self):
         self.pos += self.velocity / delta_time()
-        self.rect.center = self.pos
+        self.rect.x = self.pos.x
+        self.rect.y = self.pos.y
 
         field = get_rect()
 
@@ -84,11 +92,15 @@ class Shell(SpriteBase):
             for sprite in group:
                 if sprite is not self:
                     if self.is_collided_with(sprite):
-                        if sprite.destroyable:
+                        if isinstance(sprite, GridSprite):
+                            if sprite.destroyable:
+                                sprite.kill()
+                                self.kill()
+                            elif sprite.shell_obstacle:
+                                self.kill()
+                        elif isinstance(sprite, Shell):
                             self.kill()
                             sprite.kill()
-                        elif sprite.shell_obstacle:
-                            self.kill()
 
     def is_collided_with(self, sprite):
         return self.rect.colliderect(sprite.rect)
