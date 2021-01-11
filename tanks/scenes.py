@@ -1,7 +1,10 @@
 import os.path
 import pygame
 import tanks.grid as grid
-from tanks.sprites import ConcreteWall, BrickWall, Bush, Water
+from tanks.constants import SCREEN_SIZE
+from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Shell
+from tanks.ui import TextButton
+from random import randint
 
 _current = None
 
@@ -31,7 +34,23 @@ class Scene:
         self.all_sprites.empty()
 
 
+class Menu(Scene):
+    def __init__(self):
+        super().__init__()
+        x, y = SCREEN_SIZE[0] // 2, SCREEN_SIZE[1] // 2
+        TextButton(x, y, 'Играть', lambda: load_scene(Level.load('test.txt')), self.all_sprites)
+
+    def draw(self, surface):
+        surface.fill('black')
+        super().draw(surface)
+
+
 class Level(Scene):
+    def update(self):
+        if pygame.mouse.get_pressed(3)[0]:
+            Shell(*pygame.mouse.get_pos(), randint(1, 4), self.all_sprites)
+        super().update()
+
     def draw(self, surface):
         surface.fill((116, 116, 116))  # gray
         pygame.draw.rect(surface, 'black', grid.get_rect())
