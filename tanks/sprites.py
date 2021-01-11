@@ -3,6 +3,7 @@ import pygame
 from tanks.constants import PIXEL_RATIO
 from tanks.grid import cell_to_screen, get_rect
 from tanks.time import delta_time
+from tanks.directions import direction_to_vector
 
 
 def load_image(name):
@@ -56,30 +57,30 @@ class Water(GridSprite):
 
 
 class Shell(SpriteBase):
-    __img = load_image('shell.png')
-    sheet = __img
+    sheet = load_image('shell.png')
+    speed = 1
 
-    def __init__(self, x, y, vector_x, vector_y, *groups):
-        size = self.__img.get_size()
-        if vector_x < 0:
+    def __init__(self, x, y, direction, *groups):
+        self.vector_velocity = direction_to_vector(direction, self.speed)
+        size = self.sheet.get_size()
+        if self.vector_velocity.x < 0:
             x -= size[0] * 1.5
             y -= size[1] / 2
-            self.sheet = pygame.transform.rotate(self.__img, 90)
-        if vector_y < 0:
+            self.sheet = pygame.transform.rotate(self.sheet, 90)
+        if self.vector_velocity.y < 0:
             x -= size[0] / 2
             y -= size[1]
-        if vector_y > 0:
+        if self.vector_velocity.y > 0:
             x -= size[0] / 2
-            self.sheet = pygame.transform.rotate(self.__img, 180)
-        if vector_x > 0:
+            self.sheet = pygame.transform.rotate(self.sheet, 180)
+        if self.vector_velocity.x > 0:
             y -= size[1] / 2
-            self.sheet = pygame.transform.rotate(self.__img, -90)
+            self.sheet = pygame.transform.rotate(self.sheet, -90)
         self.pos = pygame.Vector2(x, y)
-        self.velocity = pygame.Vector2(vector_x, vector_y)
         super().__init__(x, y, *groups)
 
     def update(self):
-        self.pos += self.velocity / delta_time()
+        self.pos += self.vector_velocity / delta_time()
         self.rect.x = self.pos.x
         self.rect.y = self.pos.y
 

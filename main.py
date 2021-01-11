@@ -21,7 +21,7 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
-            Shell(pos[0], pos[1], -1, 0, all_sprites)
+            Shell(pos[0], pos[1], 1, all_sprites)
     tick()
     all_sprites.update()
     all_sprites.draw(screen)
