@@ -46,7 +46,7 @@ class Level(Scene):
                 if level_map[row][col] == BrickWall.char:
                     BrickWall(col, row, level.all_sprites)
                 if level_map[row][col] == Bush.char:
-                    Bush(col, row, )
+                    Bush(col, row, level.all_sprites)
                 if level_map[row][col] == ConcreteWall.char:
                     ConcreteWall(col, row, level.all_sprites)
                 if level_map[row][col] == Water.char:
