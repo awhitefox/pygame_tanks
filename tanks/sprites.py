@@ -4,12 +4,22 @@ from tanks.constants import PIXEL_RATIO
 from tanks.grid import cell_to_screen, get_rect
 from tanks.time import delta_time
 from tanks.directions import *
+from tanks.TankControlScheme import TankControlScheme
 
 
 def load_image(name):
     image = pygame.image.load(os.path.join('data', name))
     rect = image.get_rect()
     return pygame.transform.scale(image, (rect.w * PIXEL_RATIO, rect.h * PIXEL_RATIO))
+
+
+def cut_sheet(sheet, columns, rows):
+    frames = []
+    w, h = sheet.get_width() // columns, sheet.get_height() // rows
+    for j in range(rows):
+        for i in range(columns):
+            frames.append(sheet.subsurface(pygame.Rect(w * i, h * j, w, h)))
+    return frames
 
 
 class SpriteBase(pygame.sprite.Sprite):
@@ -105,6 +115,56 @@ class Shell(SpriteBase):
                         elif isinstance(sprite, Shell):
                             self.kill()
                             sprite.kill()
+
+    def is_collided_with(self, sprite):
+        return self.rect.colliderect(sprite.rect)
+
+
+class Tank(SpriteBase):
+    sheet = load_image('tanks.png')
+    speed = 50
+    frames = cut_sheet(sheet, 8, 1)
+
+    def __init__(self, x, y, is_default_control_scheme, *groups):
+        super().__init__(x, y, *groups)
+        self.control_scheme = TankControlScheme.default() if is_default_control_scheme else TankControlScheme.alternative()
+        self.pos = pygame.Vector2(x, y)
+        self.vector_velocity = pygame.Vector2(0, 0)
+
+        if is_default_control_scheme:
+            self.skin = self.frames[:4]
+        else:
+            self.skin = self.frames[4:]
+
+        self.image = self.skin[0]
+
+    def update(self):
+
+        if self.control_scheme.up_pressed():
+            self.image = self.skin[0]
+            self._move(pygame.Vector2(0, -self.speed))
+
+        elif self.control_scheme.down_pressed():
+            self.image = self.skin[2]
+            self._move(pygame.Vector2(0, self.speed))
+
+        elif self.control_scheme.right_pressed():
+            self.image = self.skin[3]
+            self._move(pygame.Vector2(self.speed, 0))
+
+        elif self.control_scheme.left_pressed():
+            self.image = self.skin[1]
+            self._move(pygame.Vector2(-self.speed, 0))
+
+    def _move(self, vector):
+        for group in self.groups():
+            for sprite in group:
+                if self.is_collided_with(sprite):
+                    print(sprite, sprite.rect)
+        self.vector_velocity = vector
+        self.pos += self.vector_velocity * delta_time()
+        self.rect.x = self.pos.x
+        self.rect.y = self.pos.y
 
     def is_collided_with(self, sprite):
         return self.rect.colliderect(sprite.rect)
