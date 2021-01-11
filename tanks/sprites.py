@@ -90,6 +90,7 @@ class Shell(SpriteBase):
 
         if self.pos.x > field.right or self.pos.x < field.left or self.pos.y > field.bottom or self.pos.y < field.top:
             self.kill()
+            return
 
         for group in self.groups():
             for sprite in group:
