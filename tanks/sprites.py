@@ -121,46 +121,45 @@ class Shell(SpriteBase):
 
 
 class Tank(SpriteBase):
-    sheet = load_image('tanks.png')
+    skins = load_image('tanks.png')
     speed = 50
-    frames = cut_sheet(sheet, 8, 1)
+    frames = cut_sheet(skins, 8, 1)
 
     def __init__(self, x, y, is_default_control_scheme, *groups):
+        if is_default_control_scheme:
+            self.sheets = self.frames[:4]
+        else:
+            self.sheets = self.frames[4:]
+        self.sheet = self.sheets[0]
         super().__init__(x, y, *groups)
         self.control_scheme = TankControlScheme.default() if is_default_control_scheme else TankControlScheme.alternative()
         self.pos = pygame.Vector2(x, y)
         self.vector_velocity = pygame.Vector2(0, 0)
-
-        if is_default_control_scheme:
-            self.skin = self.frames[:4]
-        else:
-            self.skin = self.frames[4:]
-
-        self.image = self.skin[0]
+        self.flag = True
 
     def update(self):
-
-        if self.control_scheme.up_pressed():
-            self.image = self.skin[0]
-            self._move(pygame.Vector2(0, -self.speed))
-
-        elif self.control_scheme.down_pressed():
-            self.image = self.skin[2]
-            self._move(pygame.Vector2(0, self.speed))
-
-        elif self.control_scheme.right_pressed():
-            self.image = self.skin[3]
-            self._move(pygame.Vector2(self.speed, 0))
-
-        elif self.control_scheme.left_pressed():
-            self.image = self.skin[1]
-            self._move(pygame.Vector2(-self.speed, 0))
-
-    def _move(self, vector):
         for group in self.groups():
             for sprite in group:
-                if self.is_collided_with(sprite):
-                    print(sprite, sprite.rect)
+                if self.is_collided_with(sprite) and sprite is not self:
+                    pass
+                else:
+                    if self.control_scheme.up_pressed():
+                        self.image = self.sheets[0]
+                        self._move(pygame.Vector2(0, -self.speed))
+
+                    elif self.control_scheme.down_pressed():
+                        self.image = self.sheets[2]
+                        self._move(pygame.Vector2(0, self.speed))
+
+                    elif self.control_scheme.right_pressed():
+                        self.image = self.sheets[3]
+                        self._move(pygame.Vector2(self.speed, 0))
+
+                    elif self.control_scheme.left_pressed():
+                        self.image = self.sheets[1]
+                        self._move(pygame.Vector2(-self.speed, 0))
+
+    def _move(self, vector):
         self.vector_velocity = vector
         self.pos += self.vector_velocity * delta_time()
         self.rect.x = self.pos.x
