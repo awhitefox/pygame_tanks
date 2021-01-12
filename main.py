@@ -6,7 +6,7 @@ from tanks.input import keys_just_pressed, mouse_keys_just_pressed
 
 pygame.init()
 screen = pygame.display.set_mode(SCREEN_SIZE)
-scenes.load_scene(scenes.Level.load('test.txt'))
+scenes.load_scene(scenes.MainMenu())
 
 running = True
 while running:
@@ -19,6 +19,7 @@ while running:
             keys_just_pressed.add(event.key)
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_keys_just_pressed.add(event.button)
+    screen.fill('black')
     scenes.current_scene().update()
     scenes.current_scene().draw(screen)
     pygame.display.flip()
