@@ -1,4 +1,5 @@
 import pygame
+from tanks.directions import *
 
 
 class TankControlScheme:
@@ -9,6 +10,16 @@ class TankControlScheme:
         self._down = down
         self._left = left
         self._shoot = shoot
+
+    def get_movement(self):
+        if self.up_pressed():
+            return NORTH
+        elif self.right_pressed():
+            return EAST
+        elif self.down_pressed():
+            return SOUTH
+        elif self.left_pressed():
+            return WEST
 
     def up_pressed(self) -> bool:
         return pygame.key.get_pressed()[self._up]
