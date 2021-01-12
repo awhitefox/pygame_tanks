@@ -3,9 +3,9 @@ from math import ceil
 import pygame
 import tanks.grid as grid
 from tanks.constants import SCREEN_SIZE
-from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Shell
+from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Tank
 from tanks.ui import TextButton, Label, font_medium, font_small
-from random import randint
+from tanks.input import mouse_keys_just_pressed
 
 _current = None
 
@@ -93,9 +93,18 @@ class LevelSelectMenu(Scene):
 
 
 class Level(Scene):
+    def __init__(self):
+        super().__init__()
+        self.flag = True
+
     def update(self):
-        if pygame.mouse.get_pressed(3)[0]:
-            Shell(*pygame.mouse.get_pos(), randint(1, 4), self.all_sprites)
+        if 1 in mouse_keys_just_pressed:
+            pos = pygame.mouse.get_pos()
+            if self.flag:
+                Tank(pos[0], pos[1], True, self.all_sprites)
+                self.flag = False
+            else:
+                Tank(pos[0], pos[1], False, self.all_sprites)
         super().update()
 
     def draw(self, surface):
