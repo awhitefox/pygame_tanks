@@ -1,15 +1,27 @@
 import os.path
+
 import pygame
+
+from tanks.TankControlScheme import TankControlScheme
 from tanks.constants import PIXEL_RATIO
+from tanks.directions import *
 from tanks.grid import cell_to_screen, get_rect
 from tanks.time import delta_time
-from tanks.directions import *
 
 
 def load_image(name):
     image = pygame.image.load(os.path.join('data', name))
     rect = image.get_rect()
     return pygame.transform.scale(image, (rect.w * PIXEL_RATIO, rect.h * PIXEL_RATIO))
+
+
+def cut_sheet(sheet, columns, rows):
+    frames = []
+    w, h = sheet.get_width() // columns, sheet.get_height() // rows
+    for j in range(rows):
+        for i in range(columns):
+            frames.append(sheet.subsurface(pygame.Rect(w * i, h * j, w, h)))
+    return frames
 
 
 class SpriteBase(pygame.sprite.Sprite):
@@ -73,16 +85,18 @@ class Shell(SpriteBase):
         self.vector_velocity = direction_to_vector(direction, self.speed)
         size = self.sheet.get_size()
         if direction == WEST:
-            x -= size[0] * 1.5
+            x -= size[0] * 1.5 - 1
             y -= size[1] / 2
             rotate = 90
         if direction == NORTH:
             x -= size[0] / 2
-            y -= size[1]
+            y -= size[1] + 1
         if direction == SOUTH:
+            y += 1
             x -= size[0] / 2
             rotate = 180
         if direction == EAST:
+            x += 1
             y -= size[1] / 2
             rotate = -90
         self.pos = pygame.Vector2(x, y)
@@ -116,3 +130,95 @@ class Shell(SpriteBase):
 
     def is_collided_with(self, sprite):
         return self.rect.colliderect(sprite.rect)
+
+
+class Tank(SpriteBase):
+    shoot_cooldown = 3
+    sheet = load_image('tanks.png')
+    speed = 50
+    frames = cut_sheet(sheet, 8, 1)
+
+    def __init__(self, x, y, is_default_control_scheme, *groups):
+
+        super().__init__(x, y, *groups)
+        self.seconds_from_last_shot = 0
+        if is_default_control_scheme:
+            self.images = self.frames[:4]
+        else:
+            self.images = self.frames[4:]
+        self.image = self.images[0]
+        self.rect = self.image.get_rect()
+        self.rect = self.rect.move(x, y)
+        self.rect.inflate_ip(-2 * PIXEL_RATIO, -2 * PIXEL_RATIO)  # resize rect because tank is smaller
+        self.direction = NORTH if is_default_control_scheme else SOUTH
+        self.movement = None
+
+        if is_default_control_scheme:
+            self.control_scheme = TankControlScheme.default()
+        else:
+            self.control_scheme = TankControlScheme.alternative()
+
+        self.pos = pygame.Vector2(x, y)
+        self.vector_velocity = pygame.Vector2(0, 0)
+        self.flag = True
+
+    def update(self):
+
+        field = get_rect()
+
+        self.movement = self.control_scheme.get_movement()
+        self.seconds_from_last_shot += delta_time()
+
+        if self.control_scheme.shoot_pressed():
+            if self.seconds_from_last_shot >= self.shoot_cooldown:
+                self.shoot()
+                self.seconds_from_last_shot = 0
+                return
+
+        if self.movement is not None:
+            self.direction = self.movement
+
+        velocity_vec = direction_to_vector(self.movement, self.speed) * delta_time()
+
+        new_pos = self.pos + velocity_vec
+
+        if self.direction == NORTH:
+            self.image = self.images[0]
+        if self.direction == SOUTH:
+            self.image = self.images[2]
+        if self.direction == WEST:
+            self.image = self.images[1]
+        if self.direction == EAST:
+            self.image = self.images[3]
+
+        new_rect = pygame.Rect(new_pos.x, new_pos.y, *self.rect.size)
+
+        for group in self.groups():
+            for sprite in group:
+                if sprite is not self and new_rect.colliderect(sprite.rect):
+                    print(sprite)
+                    if (isinstance(sprite, GridSprite) and sprite.tank_obstacle) or isinstance(sprite, Tank):
+                        return
+                    if isinstance(sprite, Shell):
+                        self.kill()
+                        sprite.kill()
+                        return
+
+        if new_rect.x + self.rect.size[0] > field.right or new_rect.x < field.left \
+            or new_rect.y + self.rect.size[1] > field.bottom or new_rect.y < field.top:
+            return
+
+        self.pos = new_pos
+        self.rect = new_rect
+
+    def shoot(self):
+        if self.direction == NORTH:
+            print(self.pos)
+            Shell(self.pos.x + (self.rect.size[0] / 2) - 1, self.pos.y, NORTH, *self.groups())
+        elif self.direction == SOUTH:
+            print(self.pos)
+            Shell(self.pos.x + (self.rect.size[0] / 2) - 1, self.pos.y + self.rect.size[1], SOUTH, *self.groups())
+        elif self.direction == WEST:
+            Shell(self.pos.x, self.pos.y + self.rect.size[1] / 2, WEST, *self.groups())
+        elif self.direction == EAST:
+            Shell(self.pos.x + self.rect.size[0], self.pos.y + self.rect.size[1] / 2, EAST, *self.groups())

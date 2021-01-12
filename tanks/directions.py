@@ -15,6 +15,8 @@ def direction_to_vector(direction, speed=1):
         return Vector2(0, speed)
     elif direction == WEST:
         return Vector2(-speed, 0)
+    elif direction is None:
+        return Vector2(0, 0)
     else:
         raise ValueError('Direction is out of range')
 
