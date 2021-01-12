@@ -3,7 +3,7 @@ from math import ceil
 import pygame
 import tanks.grid as grid
 from tanks.constants import SCREEN_SIZE
-from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Tank
+from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank
 from tanks.ui import TextButton, Label, font_medium, font_small
 from tanks.input import mouse_keys_just_pressed
 
@@ -126,6 +126,8 @@ class Level(Scene):
                     ConcreteWall(col, row, level.all_sprites)
                 if level_map[row][col] == Water.char:
                     Water(col, row, level.all_sprites)
+                if level_map[row][col] == Spike.char:
+                    Spike(col, row, level.all_sprites)
         return level
 
     @staticmethod
