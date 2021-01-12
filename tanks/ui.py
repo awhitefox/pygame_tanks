@@ -1,5 +1,6 @@
 import os.path
 import pygame
+from tanks.input import mouse_keys_just_pressed
 
 pygame.font.init()
 font_medium = pygame.font.Font(os.path.join('fonts', 'joystix.monospace.ttf'), 50)
@@ -37,7 +38,7 @@ class TextButton(pygame.sprite.Sprite):
 
     def update(self):
         hover = self.rect.collidepoint(pygame.mouse.get_pos())
-        click = self.enabled and hover and pygame.mouse.get_pressed(3)[0]
+        click = self.enabled and hover and 1 in mouse_keys_just_pressed
         self.image = self.font.render(self.get_text(hover), True, (255, 255, 255))
         w, h = self.image.get_size()
         self.rect.inflate_ip(w - self.rect.w, h - self.rect.h)
