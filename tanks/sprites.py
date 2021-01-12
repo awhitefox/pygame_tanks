@@ -27,6 +27,7 @@ class GridSprite(SpriteBase):
     destroyable = False
     tank_obstacle = True
     shell_obstacle = True
+    layer = 0
 
     def __init__(self, grid_x, grid_y, *groups):
         super().__init__(*cell_to_screen(grid_x, grid_y), *groups)
@@ -48,6 +49,7 @@ class Bush(GridSprite):
     char = '*'
     tank_obstacle = False
     shell_obstacle = False
+    layer = 1
 
 
 class Water(GridSprite):
