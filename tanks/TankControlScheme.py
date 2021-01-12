@@ -42,4 +42,4 @@ class TankControlScheme:
 
     @classmethod
     def alternative(cls):
-        return cls(pygame.K_UP, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_LEFT, pygame.K_KP_ENTER)
+        return cls(pygame.K_UP, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RETURN)

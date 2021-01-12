@@ -190,7 +190,6 @@ class Tank(SpriteBase):
         for group in self.groups():
             for sprite in group:
                 if sprite is not self and new_rect.colliderect(sprite.rect):
-                    print(sprite)
                     if (isinstance(sprite, GridSprite) and sprite.tank_obstacle) or isinstance(sprite, Tank):
                         return
                     if isinstance(sprite, Shell):
@@ -207,10 +206,8 @@ class Tank(SpriteBase):
 
     def shoot(self):
         if self.direction == NORTH:
-            print(self.pos)
             Shell(self.pos.x + (self.rect.size[0] / 2) - 1, self.pos.y, NORTH, *self.groups())
         elif self.direction == SOUTH:
-            print(self.pos)
             Shell(self.pos.x + (self.rect.size[0] / 2) - 1, self.pos.y + self.rect.size[1], SOUTH, *self.groups())
         elif self.direction == WEST:
             Shell(self.pos.x, self.pos.y + self.rect.size[1] / 2, WEST, *self.groups())
