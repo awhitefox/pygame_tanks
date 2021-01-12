@@ -2,23 +2,44 @@ import os.path
 import pygame
 
 pygame.font.init()
-font = pygame.font.Font(os.path.join('fonts', 'joystix.monospace.ttf'), 50)
+font_medium = pygame.font.Font(os.path.join('fonts', 'joystix.monospace.ttf'), 50)
+font_small = pygame.font.Font(os.path.join('fonts', 'joystix.monospace.ttf'), 25)
+
+
+class Label(pygame.sprite.Sprite):
+    def __init__(self, center_x, center_y, text, font, *groups):
+        super().__init__(*groups)
+        self.text = text
+        self.font = font
+        self.rect = pygame.Rect(0, 0, *self.font.size(self.text))
+        self.rect.center = center_x, center_y
+        self.image = pygame.surface.Surface(self.rect.size)
+
+    def update(self):
+        self.image = self.font.render(self.text, True, (255, 255, 255))
+        w, h = self.image.get_size()
+        self.rect.inflate_ip(w - self.rect.w, h - self.rect.h)
 
 
 class TextButton(pygame.sprite.Sprite):
-    def __init__(self, center_x, center_y, text, on_click, *groups):
+    def __init__(self, center_x, center_y, text, font, *groups):
         super().__init__(*groups)
-        self.text = text
-        self.on_click = on_click
-        self.rect = pygame.Rect(0, 0, *font.size(self.get_text(True)))
+        self.enabled = True
+        self.raw_text = text
+        self.font = font
+        self.on_click = None
+        self.rect = pygame.Rect(0, 0, *self.font.size(self.get_text()))
         self.rect.center = center_x, center_y
+        self.image = pygame.surface.Surface(self.rect.size)
 
     def get_text(self, hover=False):
-        return f'> {self.text} <' if hover else f'  {self.text}  '
+        return (f'> {self.raw_text} <' if hover else f'  {self.raw_text}  ') if self.enabled else ''
 
     def update(self):
         hover = self.rect.collidepoint(pygame.mouse.get_pos())
-        click = hover and pygame.mouse.get_pressed(3)[0]
-        self.image = font.render(self.get_text(hover), False, (255, 255, 255))
-        if click:
-            self.on_click()
+        click = self.enabled and hover and pygame.mouse.get_pressed(3)[0]
+        self.image = self.font.render(self.get_text(hover), True, (255, 255, 255))
+        w, h = self.image.get_size()
+        self.rect.inflate_ip(w - self.rect.w, h - self.rect.h)
+        if self.on_click and click:
+            self.on_click(self)
