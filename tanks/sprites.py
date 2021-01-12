@@ -70,6 +70,12 @@ class Water(GridSprite):
     shell_obstacle = False
 
 
+class Spike(GridSprite):
+    sheet = load_image('spike.png')
+    char = 'x'
+    shell_obstacle = False
+
+
 class Shell(SpriteBase):
     sheet = load_image('shell.png')
     speed = 100
