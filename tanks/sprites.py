@@ -133,26 +133,33 @@ class Shell(SpriteBase):
 
 
 class Tank(SpriteBase):
+    distance_to_animate = 2
     shoot_cooldown = 2.5
     sheet = load_image('tanks.png')
     speed = 50
-    frames = cut_sheet(sheet, 8, 1)
+    frames = cut_sheet(sheet, 8, 2)
+    print(frames)
 
     def __init__(self, x, y, is_default_control_scheme, *groups):
+        self.distance = 0
         x, y = x + PIXEL_RATIO, y + PIXEL_RATIO  # center tank in 2x2 square
         super().__init__(x, y, *groups)
         self.seconds_from_last_shot = self.shoot_cooldown
+        self.frame = 0
+        self.pos = pygame.Vector2(x, y)
+        self.old_pos = self.pos
         if is_default_control_scheme:
-            self.images = self.frames[:4]
+            self.images = self.frames[:8]
             self.direction = NORTH
         else:
-            self.images = self.frames[4:]
+            self.images = self.frames[8:]
             self.direction = SOUTH
         self.image = self._get_image()
         self.rect = self.image.get_rect()
         self.rect.inflate_ip(-2 * PIXEL_RATIO, -2 * PIXEL_RATIO)  # resize rect because tank is smaller
         self.rect.x = x
         self.rect.y = y
+
         self.movement = None
 
         if is_default_control_scheme:
@@ -160,7 +167,6 @@ class Tank(SpriteBase):
         else:
             self.control_scheme = TankControlScheme.alternative()
 
-        self.pos = pygame.Vector2(x, y)
         self.vector_velocity = pygame.Vector2(0, 0)
         self.flag = True
 
@@ -179,8 +185,8 @@ class Tank(SpriteBase):
 
         if self.movement is not None:
             self.direction = self.movement
-        self.image = self._get_image()
 
+        self.image = self._get_image()
         velocity_vec = direction_to_vector(self.movement, self.speed) * delta_time()
 
         new_pos = self.pos + velocity_vec
@@ -200,7 +206,8 @@ class Tank(SpriteBase):
             or new_rect.y + self.rect.size[1] > field.bottom or new_rect.y < field.top:
             return
 
-        self.pos = new_pos
+        self.pos, self.old_pos = new_pos, self.pos
+        self.distance += (self.pos - self.old_pos).length()
         self.rect = new_rect
 
     def shoot(self):
@@ -215,10 +222,31 @@ class Tank(SpriteBase):
 
     def _get_image(self):
         if self.direction == NORTH:
-            return self.images[0]
+            if self.distance > self.distance_to_animate:
+                if self.frame == 0:
+                    self.frame = 1
+                else:
+                    self.frame = 0
+                self.distance = 0
         if self.direction == SOUTH:
-            return self.images[2]
+            if self.distance > self.distance_to_animate:
+                if self.frame == 4:
+                    self.frame = 5
+                else:
+                    self.frame = 4
+                self.distance = 0
         if self.direction == WEST:
-            return self.images[1]
+            if self.distance > self.distance_to_animate:
+                if self.frame == 2:
+                    self.frame = 3
+                else:
+                    self.frame = 2
+                self.distance = 0
         if self.direction == EAST:
-            return self.images[3]
+            if self.distance > self.distance_to_animate:
+                if self.frame == 6:
+                    self.frame = 7
+                else:
+                    self.frame = 6
+                self.distance = 0
+        return self.images[self.frame]
