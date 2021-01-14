@@ -139,8 +139,8 @@ class Tank(SpriteBase):
     frames = cut_sheet(sheet, 8, 1)
 
     def __init__(self, x, y, is_default_control_scheme, *groups):
-
         super().__init__(x, y, *groups)
+        x, y = x + PIXEL_RATIO, y + PIXEL_RATIO  # center tank in 2x2 square
         self.seconds_from_last_shot = 0
         if is_default_control_scheme:
             self.images = self.frames[:4]
