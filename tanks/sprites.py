@@ -78,7 +78,7 @@ class Spike(GridSprite):
 
 class Shell(SpriteBase):
     sheet = load_image('shell.png')
-    speed = 100
+    speed = 400
 
     def __init__(self, x, y, direction, *groups):
         rotate = 0
@@ -133,7 +133,7 @@ class Shell(SpriteBase):
 
 
 class Tank(SpriteBase):
-    shoot_cooldown = 3
+    shoot_cooldown = 2.5
     sheet = load_image('tanks.png')
     speed = 50
     frames = cut_sheet(sheet, 8, 1)
@@ -141,7 +141,7 @@ class Tank(SpriteBase):
     def __init__(self, x, y, is_default_control_scheme, *groups):
         x, y = x + PIXEL_RATIO, y + PIXEL_RATIO  # center tank in 2x2 square
         super().__init__(x, y, *groups)
-        self.seconds_from_last_shot = 0
+        self.seconds_from_last_shot = self.shoot_cooldown
         if is_default_control_scheme:
             self.images = self.frames[:4]
             self.direction = NORTH
