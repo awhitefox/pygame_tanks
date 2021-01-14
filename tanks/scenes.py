@@ -1,11 +1,13 @@
+import sys
 import os.path
 from math import ceil
 import pygame
 import tanks.grid as grid
 from tanks.constants import SCREEN_SIZE
 from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank
-from tanks.ui import TextButton, Label, font_medium, font_small
+from tanks.ui import TextButton, Label, GameLogo, font_medium, font_small
 from tanks.input import mouse_keys_just_pressed
+from random import randint
 
 _current = None
 
@@ -38,9 +40,42 @@ class Scene:
 class MainMenu(Scene):
     def __init__(self):
         super().__init__()
+        GameLogo(SCREEN_SIZE[0] // 2, SCREEN_SIZE[1] // 4, self.all_sprites)
         x, y = SCREEN_SIZE[0] // 2, SCREEN_SIZE[1] // 2
+
         play_btn = TextButton(x, y, 'Играть', font_medium, self.all_sprites)
+        help_btn = TextButton(x, y + 70, 'Помощь', font_medium, self.all_sprites)
+        exit_btn = TextButton(x, y + 140, 'Выход', font_medium, self.all_sprites)
+
         play_btn.on_click = lambda b: load_scene(LevelSelectMenu())
+        help_btn.on_click = lambda b: load_scene(HelpMenu())
+        exit_btn.on_click = lambda b: sys.exit()
+
+
+class HelpMenu(Scene):
+    help_text = [
+        'Для победы уничтожьте танк',
+        'противника 3 раза',
+        '',
+        'Игрок 1',
+        'Передвижение: WASD',
+        'Огонь: Пробел',
+        '',
+        'Игрок 2',
+        'Передвижение: Стрелки',
+        'Огонь: Enter'
+    ]
+
+    def __init__(self):
+        super().__init__()
+        x, y = SCREEN_SIZE[0] // 2, SCREEN_SIZE[1]
+
+        Label(x, 50, 'Помощь', font_medium, self.all_sprites)
+        for i in range(len(self.help_text)):
+            Label(x, 150 + 40 * i, self.help_text[i], font_small, self.all_sprites)
+
+        back_btn = TextButton(x, y - 40, 'Назад', font_small, self.all_sprites)
+        back_btn.on_click = lambda b: load_scene(MainMenu())
 
 
 class LevelSelectMenu(Scene):
@@ -61,15 +96,13 @@ class LevelSelectMenu(Scene):
         self.btn_next = TextButton(x * 3, y, 'СЛЕД', font_small, self.all_sprites)
         self.btn_back = TextButton(x * 2, y + 40, 'Назад', font_small, self.all_sprites)
 
-        self.bind_events()
-        self.render_page()
-
-    def bind_events(self):
         self.btn_prev.on_click = self.on_prev_btn
         self.btn_next.on_click = self.on_next_btn
         self.btn_back.on_click = lambda b: load_scene(MainMenu())
         for btn in self.level_buttons:
             btn.on_click = lambda b: load_scene(Level.load(b.raw_text + '.txt'))
+
+        self.render_page()
 
     def render_page(self):
         i = self.current_page

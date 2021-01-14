@@ -1,5 +1,6 @@
 import os.path
 import pygame
+from tanks.sprites import SpriteBase, load_image
 from tanks.input import mouse_keys_just_pressed
 
 pygame.font.init()
@@ -44,3 +45,11 @@ class TextButton(pygame.sprite.Sprite):
         self.rect.inflate_ip(w - self.rect.w, h - self.rect.h)
         if self.on_click and click:
             self.on_click(self)
+
+
+class GameLogo(SpriteBase):
+    sheet = load_image('logo.png')
+
+    def __init__(self, center_x, center_y, *groups):
+        super().__init__(0, 0, *groups)
+        self.rect.center = center_x, center_y
