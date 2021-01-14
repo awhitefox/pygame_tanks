@@ -3,7 +3,7 @@ import os.path
 from math import ceil
 import pygame
 import tanks.grid as grid
-from tanks.constants import SCREEN_SIZE
+from tanks.constants import SCREEN_SIZE, MAP_SIZE
 from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank
 from tanks.ui import TextButton, Label, GameLogo, font_medium, font_small
 from tanks.input import mouse_keys_just_pressed
@@ -128,16 +128,12 @@ class LevelSelectMenu(Scene):
 class Level(Scene):
     def __init__(self):
         super().__init__()
+        grid_x = MAP_SIZE[0] // 2 - 1
+        self.tank1 = Tank(*grid.cell_to_screen(grid_x, MAP_SIZE[1] - 2), True, self.all_sprites)
+        self.tank2 = Tank(*grid.cell_to_screen(grid_x, 0), False, self.all_sprites)
         self.flag = True
 
     def update(self):
-        if 1 in mouse_keys_just_pressed:
-            pos = pygame.mouse.get_pos()
-            if self.flag:
-                Tank(pos[0], pos[1], True, self.all_sprites)
-                self.flag = False
-            else:
-                Tank(pos[0], pos[1], False, self.all_sprites)
         super().update()
 
     def draw(self, surface):
