@@ -78,7 +78,7 @@ class Spike(GridSprite):
 
 class Shell(SpriteBase):
     sheet = load_image('shell.png')
-    speed = 100
+    speed = 400
 
     def __init__(self, x, y, direction, *groups):
         rotate = 0
@@ -133,24 +133,26 @@ class Shell(SpriteBase):
 
 
 class Tank(SpriteBase):
-    shoot_cooldown = 3
+    shoot_cooldown = 2.5
     sheet = load_image('tanks.png')
     speed = 50
     frames = cut_sheet(sheet, 8, 1)
 
     def __init__(self, x, y, is_default_control_scheme, *groups):
-
+        x, y = x + PIXEL_RATIO, y + PIXEL_RATIO  # center tank in 2x2 square
         super().__init__(x, y, *groups)
-        self.seconds_from_last_shot = 0
+        self.seconds_from_last_shot = self.shoot_cooldown
         if is_default_control_scheme:
             self.images = self.frames[:4]
+            self.direction = NORTH
         else:
             self.images = self.frames[4:]
-        self.image = self.images[0]
+            self.direction = SOUTH
+        self.image = self._get_image()
         self.rect = self.image.get_rect()
-        self.rect = self.rect.move(x, y)
         self.rect.inflate_ip(-2 * PIXEL_RATIO, -2 * PIXEL_RATIO)  # resize rect because tank is smaller
-        self.direction = NORTH if is_default_control_scheme else SOUTH
+        self.rect.x = x
+        self.rect.y = y
         self.movement = None
 
         if is_default_control_scheme:
@@ -177,20 +179,11 @@ class Tank(SpriteBase):
 
         if self.movement is not None:
             self.direction = self.movement
+        self.image = self._get_image()
 
         velocity_vec = direction_to_vector(self.movement, self.speed) * delta_time()
 
         new_pos = self.pos + velocity_vec
-
-        if self.direction == NORTH:
-            self.image = self.images[0]
-        if self.direction == SOUTH:
-            self.image = self.images[2]
-        if self.direction == WEST:
-            self.image = self.images[1]
-        if self.direction == EAST:
-            self.image = self.images[3]
-
         new_rect = pygame.Rect(new_pos.x, new_pos.y, *self.rect.size)
 
         for group in self.groups():
@@ -219,3 +212,13 @@ class Tank(SpriteBase):
             Shell(self.pos.x, self.pos.y + self.rect.size[1] / 2, WEST, *self.groups())
         elif self.direction == EAST:
             Shell(self.pos.x + self.rect.size[0], self.pos.y + self.rect.size[1] / 2, EAST, *self.groups())
+
+    def _get_image(self):
+        if self.direction == NORTH:
+            return self.images[0]
+        if self.direction == SOUTH:
+            return self.images[2]
+        if self.direction == WEST:
+            return self.images[1]
+        if self.direction == EAST:
+            return self.images[3]
