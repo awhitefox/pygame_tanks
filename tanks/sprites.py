@@ -77,6 +77,8 @@ class Spike(GridSprite):
 
 
 class Shell(SpriteBase):
+    pygame.mixer.init()
+    explosion_sound = pygame.mixer.Sound('data/shell_explosion.wav')
     sheet = load_image('shell.png')
     speed = 100
 
@@ -111,6 +113,7 @@ class Shell(SpriteBase):
         field = get_rect()
 
         if self.pos.x > field.right or self.pos.x < field.left or self.pos.y > field.bottom or self.pos.y < field.top:
+            self.explosion_sound.play()
             self.kill()
             return
 
@@ -122,18 +125,24 @@ class Shell(SpriteBase):
                             if sprite.destroyable:
                                 sprite.kill()
                                 self.kill()
+                                self.explosion_sound.play()
                             elif sprite.shell_obstacle:
                                 self.kill()
+                                self.explosion_sound.play()
                         elif isinstance(sprite, Shell):
                             self.kill()
                             sprite.kill()
+                            self.explosion_sound.play()
 
     def is_collided_with(self, sprite):
         return self.rect.colliderect(sprite.rect)
 
 
 class Tank(SpriteBase):
+    pygame.mixer.init()
     shoot_cooldown = 3
+    shoot_sound = pygame.mixer.Sound("data/tank_fire.flac")
+    explosion_sound = pygame.mixer.Sound("data/tank_explosion.flac")
     sheet = load_image('tanks.png')
     speed = 50
     frames = cut_sheet(sheet, 8, 1)
@@ -163,6 +172,7 @@ class Tank(SpriteBase):
         self.flag = True
 
     def update(self):
+
 
         field = get_rect()
 
@@ -201,6 +211,7 @@ class Tank(SpriteBase):
                     if isinstance(sprite, Shell):
                         self.kill()
                         sprite.kill()
+                        self.explosion_sound.play()
                         return
 
         if new_rect.x + self.rect.size[0] > field.right or new_rect.x < field.left \
@@ -219,3 +230,5 @@ class Tank(SpriteBase):
             Shell(self.pos.x, self.pos.y + self.rect.size[1] / 2, WEST, *self.groups())
         elif self.direction == EAST:
             Shell(self.pos.x + self.rect.size[0], self.pos.y + self.rect.size[1] / 2, EAST, *self.groups())
+        self.shoot_sound.play()
+
