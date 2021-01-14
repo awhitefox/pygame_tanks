@@ -7,6 +7,7 @@ from tanks.constants import PIXEL_RATIO
 from tanks.directions import *
 from tanks.grid import cell_to_screen, get_rect
 from tanks.time import delta_time
+pygame.mixer.init()
 
 
 def load_image(name):
@@ -77,8 +78,8 @@ class Spike(GridSprite):
 
 
 class Shell(SpriteBase):
-    pygame.mixer.init()
-    explosion_sound = pygame.mixer.Sound('data/shell_explosion.wav')
+
+    explosion_sound = pygame.mixer.Sound(os.path.join('data', 'shell_explosion.wav'))
     sheet = load_image('shell.png')
     speed = 100
 
@@ -139,10 +140,9 @@ class Shell(SpriteBase):
 
 
 class Tank(SpriteBase):
-    pygame.mixer.init()
     shoot_cooldown = 3
-    shoot_sound = pygame.mixer.Sound("data/tank_fire.flac")
-    explosion_sound = pygame.mixer.Sound("data/tank_explosion.flac")
+    shoot_sound = pygame.mixer.Sound(os.path.join('data', "tank_fire.flac"))
+    explosion_sound = pygame.mixer.Sound(os.path.join('data', "tank_explosion.flac"))
     sheet = load_image('tanks.png')
     speed = 50
     frames = cut_sheet(sheet, 8, 1)
