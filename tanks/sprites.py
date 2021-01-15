@@ -221,32 +221,21 @@ class Tank(SpriteBase):
             Shell(self.pos.x + self.rect.size[0], self.pos.y + self.rect.size[1] / 2, EAST, *self.groups())
 
     def _get_image(self):
+        frame = 0
+        if self.distance >= self.distance_to_animate:
+            self.frame += 1 if self.frame % 2 == 0 else -1
+            self.distance = 0
+
         if self.direction == NORTH:
-            if self.distance > self.distance_to_animate:
-                if self.frame == 0:
-                    self.frame = 1
-                else:
-                    self.frame = 0
-                self.distance = 0
-        if self.direction == SOUTH:
-            if self.distance > self.distance_to_animate:
-                if self.frame == 4:
-                    self.frame = 5
-                else:
-                    self.frame = 4
-                self.distance = 0
-        if self.direction == WEST:
-            if self.distance > self.distance_to_animate:
-                if self.frame == 2:
-                    self.frame = 3
-                else:
-                    self.frame = 2
-                self.distance = 0
-        if self.direction == EAST:
-            if self.distance > self.distance_to_animate:
-                if self.frame == 6:
-                    self.frame = 7
-                else:
-                    self.frame = 6
-                self.distance = 0
+            frame = 0
+        elif self.direction == SOUTH:
+            frame = 4
+        elif self.direction == WEST:
+            frame = 2
+        elif self.direction == EAST:
+            frame = 6
+
+        if self.frame % 2 == 1:
+            frame += 1
+        self.frame = frame
         return self.images[self.frame]
