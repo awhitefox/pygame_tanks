@@ -23,7 +23,8 @@ class HelpMenu(SceneBase):
 
         Label(x, 50, 'Помощь', font_medium, self.all_sprites)
         for i in range(len(self.help_text)):
-            Label(x, 150 + 40 * i, self.help_text[i], font_small, self.all_sprites)
+            if self.help_text[i]:
+                Label(x, 150 + 40 * i, self.help_text[i], font_small, self.all_sprites)
 
         back_btn = TextButton(x, y - 40, 'Назад', font_small, self.all_sprites)
         back_btn.on_click = lambda b: unload_current_scene()
