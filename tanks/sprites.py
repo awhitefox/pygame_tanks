@@ -76,32 +76,33 @@ class Spike(GridSprite):
     shell_obstacle = False
 
 
-class Shell(SpriteBase):
+class Shell(pygame.sprite.Sprite):
     sheet = load_image('shell.png')
     speed = 400
 
     def __init__(self, x, y, direction, *groups):
+        super().__init__(*groups)
         rotate = 0
         self.vector_velocity = direction_to_vector(direction, self.speed)
         size = self.sheet.get_size()
-        if direction == WEST:
-            x -= size[0] * 1.5 - 1
-            y -= size[1] / 2
-            rotate = 90
+        self.rect = pygame.Rect(0, 0, 0, 0)
         if direction == NORTH:
-            x -= size[0] / 2
-            y -= size[1] + 1
-        if direction == SOUTH:
-            y += 1
-            x -= size[0] / 2
-            rotate = 180
+            self.rect.center = x - size[0] / 2, y - size[1]
         if direction == EAST:
-            x += 1
-            y -= size[1] / 2
+            self.rect.center = x, y - size[0] / 2
             rotate = -90
-        self.pos = pygame.Vector2(x, y)
-        super().__init__(x, y, *groups)
-        self.image = pygame.transform.rotate(self.image, rotate)
+
+        if direction == SOUTH:
+            self.rect.center = x - size[0] / 2, y
+            rotate = 180
+
+        if direction == WEST:
+            self.rect.center = x - size[1], y - size[0] / 2
+            rotate = 90
+
+        self.image = pygame.transform.rotate(self.sheet, rotate)
+        self.rect.size = self.image.get_size()
+        self.pos = pygame.Vector2(self.rect.x, self.rect.y)
 
     def update(self):
         self.pos += self.vector_velocity * delta_time()
@@ -110,7 +111,7 @@ class Shell(SpriteBase):
 
         field = get_rect()
 
-        if self.pos.x > field.right or self.pos.x < field.left or self.pos.y > field.bottom or self.pos.y < field.top:
+        if self.pos.x + self.rect.size[0] > field.right or self.pos.x < field.left or self.pos.y + self.rect.size[1] > field.bottom or self.pos.y < field.top:
             self.kill()
             return
 
@@ -133,12 +134,11 @@ class Shell(SpriteBase):
 
 
 class Tank(SpriteBase):
-    distance_to_animate = 2
+    distance_to_animate = PIXEL_RATIO * 2
     shoot_cooldown = 2.5
     sheet = load_image('tanks.png')
     speed = 50
     frames = cut_sheet(sheet, 8, 2)
-    print(frames)
 
     def __init__(self, x, y, is_default_control_scheme, *groups):
         self.distance = 0
@@ -147,7 +147,6 @@ class Tank(SpriteBase):
         self.seconds_from_last_shot = self.shoot_cooldown
         self.frame = 0
         self.pos = pygame.Vector2(x, y)
-        self.old_pos = self.pos
         if is_default_control_scheme:
             self.images = self.frames[:8]
             self.direction = NORTH
@@ -168,10 +167,8 @@ class Tank(SpriteBase):
             self.control_scheme = TankControlScheme.alternative()
 
         self.vector_velocity = pygame.Vector2(0, 0)
-        self.flag = True
 
     def update(self):
-
         field = get_rect()
 
         self.movement = self.control_scheme.get_movement()
@@ -203,26 +200,26 @@ class Tank(SpriteBase):
                         return
 
         if new_rect.x + self.rect.size[0] > field.right or new_rect.x < field.left \
-            or new_rect.y + self.rect.size[1] > field.bottom or new_rect.y < field.top:
+                or new_rect.y + self.rect.size[1] > field.bottom or new_rect.y < field.top:
             return
 
-        self.pos, self.old_pos = new_pos, self.pos
-        self.distance += (self.pos - self.old_pos).length()
+        self.distance += (new_pos - self.pos).length()
+        self.pos = new_pos
         self.rect = new_rect
 
     def shoot(self):
         if self.direction == NORTH:
-            Shell(self.pos.x + (self.rect.size[0] / 2) - 1, self.pos.y, NORTH, *self.groups())
+            Shell(self.pos.x + (self.rect.w / 2), self.pos.y, NORTH, *self.groups())
         elif self.direction == SOUTH:
-            Shell(self.pos.x + (self.rect.size[0] / 2) - 1, self.pos.y + self.rect.size[1], SOUTH, *self.groups())
+            Shell(self.pos.x + (self.rect.w / 2), self.pos.y + self.rect.h, SOUTH, *self.groups())
         elif self.direction == WEST:
-            Shell(self.pos.x, self.pos.y + self.rect.size[1] / 2, WEST, *self.groups())
+            Shell(self.pos.x, self.pos.y + self.rect.h / 2, WEST, *self.groups())
         elif self.direction == EAST:
-            Shell(self.pos.x + self.rect.size[0], self.pos.y + self.rect.size[1] / 2, EAST, *self.groups())
+            Shell(self.pos.x + self.rect.w, self.pos.y + self.rect.h / 2, EAST, *self.groups())
 
     def _get_image(self):
         frame = 0
-        if self.distance >= self.distance_to_animate:
+        if self.distance > self.distance_to_animate:
             self.frame += 1 if self.frame % 2 == 0 else -1
             self.distance = 0
 
