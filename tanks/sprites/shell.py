@@ -4,10 +4,11 @@ from tanks import grid
 from tanks.time import delta_time
 from tanks.directions import NORTH, WEST, SOUTH, EAST, direction_to_vector
 from tanks.sprites import load_image, SpriteBase, GridSpriteBase
+from tanks.sounds import load_sound
 
 
 class Shell(SpriteBase):
-    explosion_sound = pygame.mixer.Sound(os.path.join('data', 'shell_explosion.wav'))
+    explosion_sound = load_sound('shell_explosion.wav')
     sheet = load_image('shell.png')
     speed = 400
 

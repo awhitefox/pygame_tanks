@@ -6,12 +6,13 @@ from tanks.grid import get_rect
 from tanks.time import delta_time
 from tanks.sprites import SpriteBase, GridSpriteBase, Shell
 from tanks.images import load_image, cut_sheet
+from tanks.sounds import load_sound
 
 
 class Tank(SpriteBase):
     shoot_cooldown = 2.5
-    shoot_sound = pygame.mixer.Sound(os.path.join('data', "tank_fire.flac"))
-    explosion_sound = pygame.mixer.Sound(os.path.join('data', "tank_explosion.flac"))
+    shoot_sound = load_sound('tank_fire.flac')
+    explosion_sound = load_sound('tank_explosion.flac')
     sheet = load_image('tanks.png')
     speed = 50
     frames = cut_sheet(sheet, 8, 1)
