@@ -7,6 +7,7 @@ from tanks.constants import PIXEL_RATIO
 from tanks.directions import *
 from tanks.grid import cell_to_screen, get_rect
 from tanks.time import delta_time
+pygame.mixer.init()
 
 
 def load_image(name):
@@ -77,6 +78,7 @@ class Spike(GridSprite):
 
 
 class Shell(pygame.sprite.Sprite):
+    explosion_sound = pygame.mixer.Sound(os.path.join('data', 'shell_explosion.wav'))
     sheet = load_image('shell.png')
     speed = 400
 
@@ -112,6 +114,7 @@ class Shell(pygame.sprite.Sprite):
         field = get_rect()
 
         if self.pos.x + self.rect.size[0] > field.right or self.pos.x < field.left or self.pos.y + self.rect.size[1] > field.bottom or self.pos.y < field.top:
+            self.explosion_sound.play()
             self.kill()
             return
 
@@ -123,11 +126,14 @@ class Shell(pygame.sprite.Sprite):
                             if sprite.destroyable:
                                 sprite.kill()
                                 self.kill()
+                                self.explosion_sound.play()
                             elif sprite.shell_obstacle:
                                 self.kill()
+                                self.explosion_sound.play()
                         elif isinstance(sprite, Shell):
                             self.kill()
                             sprite.kill()
+                            self.explosion_sound.play()
 
     def is_collided_with(self, sprite):
         return self.rect.colliderect(sprite.rect)
@@ -136,6 +142,8 @@ class Shell(pygame.sprite.Sprite):
 class Tank(SpriteBase):
     distance_to_animate = PIXEL_RATIO * 2
     shoot_cooldown = 2.5
+    shoot_sound = pygame.mixer.Sound(os.path.join('data', "tank_fire.flac"))
+    explosion_sound = pygame.mixer.Sound(os.path.join('data', "tank_explosion.flac"))
     sheet = load_image('tanks.png')
     speed = 50
     frames = cut_sheet(sheet, 8, 2)
@@ -197,6 +205,7 @@ class Tank(SpriteBase):
                     if isinstance(sprite, Shell):
                         self.kill()
                         sprite.kill()
+                        self.explosion_sound.play()
                         return
 
         if new_rect.x + self.rect.size[0] > field.right or new_rect.x < field.left \
@@ -216,7 +225,8 @@ class Tank(SpriteBase):
             Shell(self.pos.x, self.pos.y + self.rect.h / 2, WEST, *self.groups())
         elif self.direction == EAST:
             Shell(self.pos.x + self.rect.w, self.pos.y + self.rect.h / 2, EAST, *self.groups())
-
+        self.shoot_sound.play()
+    
     def _get_image(self):
         frame = 0
         if self.distance > self.distance_to_animate:
