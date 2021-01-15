@@ -1,7 +1,7 @@
 from math import ceil
 from tanks.constants import SCREEN_SIZE
 from tanks.ui import TextButton, Label, font_medium, font_small
-from . import load_scene, unload_current_scene, SceneBase, Level
+from tanks.scenes import load_scene, unload_current_scene, SceneBase, Level
 
 
 class LevelSelectMenu(SceneBase):

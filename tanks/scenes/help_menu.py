@@ -1,6 +1,6 @@
 from tanks.constants import SCREEN_SIZE
 from tanks.ui import TextButton, Label, font_medium, font_small
-from . import unload_current_scene, SceneBase
+from tanks.scenes import unload_current_scene, SceneBase
 
 
 class HelpMenu(SceneBase):

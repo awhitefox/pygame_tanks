@@ -1,7 +1,7 @@
 import sys
 from tanks.constants import SCREEN_SIZE
 from tanks.ui import TextButton, GameLogo, font_medium
-from . import load_scene, SceneBase, HelpMenu, LevelSelectMenu
+from tanks.scenes import load_scene, SceneBase, HelpMenu, LevelSelectMenu
 
 
 class MainMenu(SceneBase):

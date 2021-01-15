@@ -4,7 +4,7 @@ import tanks.grid as grid
 from tanks.constants import MAP_SIZE
 from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank
 from tanks.ui import ScreenMessage, font_medium
-from . import load_scene, unload_current_scene, SceneBase
+from tanks.scenes import load_scene, unload_current_scene, SceneBase
 
 
 class Level(SceneBase):
