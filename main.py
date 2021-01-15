@@ -20,8 +20,7 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_keys_just_pressed.add(event.button)
     screen.fill('black')
-    scenes.current_scene().update()
-    scenes.current_scene().draw(screen)
+    scenes.update_and_draw_current_scene(screen)
     pygame.display.flip()
     tick()
 pygame.quit()
