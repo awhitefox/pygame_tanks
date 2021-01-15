@@ -10,11 +10,14 @@ from tanks.sounds import load_sound
 
 class Tank(SpriteBase):
     distance_to_animate = PIXEL_RATIO * 2
+    shell_spawn_offset = PIXEL_RATIO
     shoot_cooldown = 2.5
+    speed = 50
+
     shoot_sound = load_sound('tank_fire.flac')
     explosion_sound = load_sound('tank_explosion.flac')
+
     sheet = load_image('tanks.png')
-    speed = 50
     frames = cut_sheet(sheet, 8, 2)
 
     def __init__(self, x, y, is_default_control_scheme, *groups):
@@ -88,14 +91,17 @@ class Tank(SpriteBase):
         self.rect = new_rect
 
     def shoot(self):
+        off = self.shell_spawn_offset
+        pos = None
         if self.direction == NORTH:
-            Shell(self.pos.x + (self.rect.w / 2), self.pos.y, NORTH, *self.groups())
+            pos = self.pos.x + (self.rect.w / 2), self.pos.y - off
         elif self.direction == SOUTH:
-            Shell(self.pos.x + (self.rect.w / 2), self.pos.y + self.rect.h, SOUTH, *self.groups())
+            pos = self.pos.x + (self.rect.w / 2), self.pos.y + self.rect.h + off
         elif self.direction == WEST:
-            Shell(self.pos.x, self.pos.y + self.rect.h / 2, WEST, *self.groups())
+            pos = self.pos.x - off, self.pos.y + self.rect.h / 2
         elif self.direction == EAST:
-            Shell(self.pos.x + self.rect.w, self.pos.y + self.rect.h / 2, EAST, *self.groups())
+            pos = self.pos.x + self.rect.w + off, self.pos.y + self.rect.h / 2
+        Shell(*pos, self.direction, *self.groups())
         self.shoot_sound.play()
 
     def _get_image(self):
