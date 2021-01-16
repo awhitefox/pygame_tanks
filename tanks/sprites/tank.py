@@ -9,6 +9,7 @@ from tanks.sounds import load_sound
 
 
 class Tank(SpriteBase):
+    """Класс танка"""
     distance_to_animate = PIXEL_RATIO * 2
     shell_spawn_offset = PIXEL_RATIO
     shoot_cooldown = 2.5
@@ -90,7 +91,8 @@ class Tank(SpriteBase):
         self.pos = new_pos
         self.rect = new_rect
 
-    def shoot(self):
+    def shoot(self) -> None:
+        """Метод для инициализации выстрела"""
         off = self.shell_spawn_offset
         pos = None
         if self.direction == NORTH:
@@ -104,7 +106,8 @@ class Tank(SpriteBase):
         Shell(*pos, self.direction, *self.groups())
         self.shoot_sound.play()
 
-    def _get_image(self):
+    def _get_image(self) -> pygame.Surface:
+        """Защищенный метод для получения картинки на основе направления куда смотрит танк"""
         frame = 0
         if self.distance > self.distance_to_animate:
             self.frame += 1 if self.frame % 2 == 0 else -1
@@ -126,6 +129,7 @@ class Tank(SpriteBase):
 
 
 class TankControlScheme:
+    """Класс схемы управления танком"""
     def __init__(self, up, right, down, left, shoot):
         self._up = up
         self._right = right
@@ -133,7 +137,8 @@ class TankControlScheme:
         self._left = left
         self._shoot = shoot
 
-    def get_movement(self):
+    def get_movement(self) -> int:
+        """Метод для получения напрвления на основе нажатой клавиши"""
         if pygame.key.get_pressed()[self._up]:
             return NORTH
         elif pygame.key.get_pressed()[self._right]:
@@ -144,12 +149,17 @@ class TankControlScheme:
             return WEST
 
     def shoot_pressed(self) -> bool:
+        """Проверка на нажатие кнопки выстрела"""
         return pygame.key.get_pressed()[self._shoot]
 
     @classmethod
-    def default(cls):
+    def default(cls) -> 'TankControlScheme':
+        """Создание объекта класса TankControlScheme с клавишами управления для 1-го игрока
+        (WASD - движение, Spacebar - выстрел)"""
         return cls(pygame.K_w, pygame.K_d, pygame.K_s, pygame.K_a, pygame.K_SPACE)
 
     @classmethod
-    def alternative(cls):
+    def alternative(cls) -> 'TankControlScheme':
+        """Создание объекта класса TankControlScheme с клавишами управления для 2-го игрока
+        (движение стрелками, Enter - выстрел)"""
         return cls(pygame.K_UP, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RETURN)
