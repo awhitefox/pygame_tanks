@@ -1,9 +1,11 @@
+from random import randint
+
 import pygame
+
 import tanks.scenes as scenes
 from tanks.constants import *
-from tanks.time import tick
 from tanks.sprites import Shell
-from random import randint
+from tanks.time import tick
 
 pygame.init()
 screen = pygame.display.set_mode(SCREEN_SIZE)

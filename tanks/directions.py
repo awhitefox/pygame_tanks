@@ -1,4 +1,5 @@
 from pygame import Vector2
+
 NONE = 0
 NORTH = 1
 EAST = 2
@@ -17,4 +18,3 @@ def direction_to_vector(direction, speed=1):
         return Vector2(-speed, 0)
     else:
         raise ValueError('Direction is out of range')
-

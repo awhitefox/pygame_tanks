@@ -133,3 +133,8 @@ class AnimatedSprite(SpriteBase):
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
         self.image = self.frames[self.cur_frame]
         _clock.tick(delta_time())
+
+
+class Explosion(AnimatedSprite):
+    def __init__(self, x, y):
+        super().__init__('explosion.png', 3, 0, x, y, 0)

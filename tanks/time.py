@@ -1,4 +1,5 @@
 import pygame
+
 _clock = pygame.time.Clock()
 _delta_time = 0
 
