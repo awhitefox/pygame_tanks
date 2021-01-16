@@ -1,16 +1,19 @@
+import pygame.sprite
 from ..grid import cell_to_screen
 from ..images import load_image
 from . import SpriteBase
 
 
 class GridSpriteBase(SpriteBase):
+    """Базовый класс спрайта, расположенного по сетке, используется для наследования."""
+
     char = None
     destroyable = False
     tank_obstacle = True
     shell_obstacle = True
     layer = 0
 
-    def __init__(self, grid_x, grid_y, *groups):
+    def __init__(self, grid_x: int, grid_y: int, *groups: pygame.sprite.Group):
         super().__init__(*cell_to_screen(grid_x, grid_y), *groups)
 
 
