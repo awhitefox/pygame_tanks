@@ -1,9 +1,13 @@
-import pygame.draw
+import pygame
 from tanks.constants import DEBUG
+from tanks.scenes import SceneBase
 _loaded = []
 
 
-def update_and_draw_current_scene(screen):
+def update_and_draw_current_scene(screen: pygame.Surface) -> None:
+    """Выполняет обновление текущей сцены, и если она не была изменена в процессе, то и ее
+    отрисовку. Если программа в режиме DEBUG, то обрисовывает все спрайты сцены красными
+    прямоугольниками."""
     current = _loaded[-1]
     current.update()
     if current == _loaded[-1]:  # if scene have not changed during update
@@ -15,11 +19,13 @@ def update_and_draw_current_scene(screen):
                     pygame.draw.rect(screen, (255, 0, 0), sprite.rect, 1)
 
 
-def load_scene(scene):
+def load_scene(scene: SceneBase) -> None:
+    """Загружает переданную сцену в конец стека сцен."""
     _loaded.append(scene)
 
 
-def unload_current_scene():
+def unload_current_scene() -> None:
+    """Удаляет последнюю сцену из стека сцен."""
     if len(_loaded) == 0:
         return
     _loaded.pop(-1).teardown()
