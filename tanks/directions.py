@@ -6,7 +6,8 @@ SOUTH = 3
 WEST = 4
 
 
-def direction_to_vector(direction, speed=1):
+def direction_to_vector(direction: int, speed: float = 1) -> Vector2:
+    """Преобразует направление в вектор"""
     if direction == NORTH:
         return Vector2(0, -speed)
     elif direction == EAST:

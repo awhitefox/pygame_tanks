@@ -7,11 +7,12 @@ from tanks.sounds import load_sound
 
 
 class Shell(pygame.sprite.Sprite):
+    """Класс снаряда, движется в заданном направлении"""
     explosion_sound = load_sound('shell_explosion.wav')
     sheet = load_image('shell.png')
     speed = 400
 
-    def __init__(self, x, y, direction, *groups):
+    def __init__(self, x: float, y: float, direction: int, *groups: pygame.sprite.Group):
         super().__init__(*groups)
         rotate = 0
         self.vector_velocity = direction_to_vector(direction, self.speed)
@@ -35,7 +36,7 @@ class Shell(pygame.sprite.Sprite):
         self.rect.size = self.image.get_size()
         self.pos = pygame.Vector2(self.rect.x, self.rect.y)
 
-    def update(self):
+    def update(self) -> None:
         self.pos += self.vector_velocity * delta_time()
         self.rect.x = self.pos.x
         self.rect.y = self.pos.y

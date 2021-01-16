@@ -21,17 +21,19 @@ class Tank(SpriteBase):
     sheet = load_image('tanks.png')
     frames = cut_sheet(sheet, 8, 2)
 
-    def __init__(self, x, y, is_default_control_scheme, *groups):
+    def __init__(self, x: float, y: float, is_default_player: bool, *groups: pygame.sprite.Group):
         self.distance = 0
         x, y = x + PIXEL_RATIO, y + PIXEL_RATIO  # center tank in 2x2 square
         super().__init__(x, y, *groups)
         self.seconds_from_last_shot = self.shoot_cooldown
         self.frame = 0
         self.pos = pygame.Vector2(x, y)
-        if is_default_control_scheme:
+        if is_default_player:
+            self.control_scheme = TankControlScheme.default()
             self.images = self.frames[:8]
             self.direction = NORTH
         else:
+            self.control_scheme = TankControlScheme.alternative()
             self.images = self.frames[8:]
             self.direction = SOUTH
         self.image = self._get_image()
@@ -43,14 +45,9 @@ class Tank(SpriteBase):
 
         self.movement = None
 
-        if is_default_control_scheme:
-            self.control_scheme = TankControlScheme.default()
-        else:
-            self.control_scheme = TankControlScheme.alternative()
-
         self.vector_velocity = pygame.Vector2(0, 0)
 
-    def update(self):
+    def update(self) -> None:
         field = get_rect()
 
         self.movement = self.control_scheme.get_movement()
@@ -130,7 +127,7 @@ class Tank(SpriteBase):
 
 class TankControlScheme:
     """Класс схемы управления танком"""
-    def __init__(self, up, right, down, left, shoot):
+    def __init__(self, up: int, right: int, down: int, left: int, shoot: int):
         self._up = up
         self._right = right
         self._down = down
