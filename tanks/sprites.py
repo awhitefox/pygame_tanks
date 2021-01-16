@@ -1,9 +1,11 @@
 import os.path
+
 import pygame
+
 from tanks.constants import PIXEL_RATIO
-from tanks.grid import cell_to_screen, get_rect
-from tanks.time import delta_time
 from tanks.directions import *
+from tanks.grid import cell_to_screen, get_rect
+from tanks.time import delta_time, _clock
 
 
 def load_image(name):
@@ -108,3 +110,26 @@ class Shell(SpriteBase):
 
     def is_collided_with(self, sprite):
         return self.rect.colliderect(sprite.rect)
+
+
+class AnimatedSprite(SpriteBase):
+    def __init__(self, name, columns, rows, x, y, ms):
+        super().__init__(x, y, name)
+        self.frames = []
+        img = load_image(name)
+        self.rect = pygame.Rect(0, 0, img.get_width() // columns,
+                                img.get_height() // rows)
+        for j in range(rows):
+            for i in range(columns):
+                frame_location = (self.rect.w * i, self.rect.h * j)
+                self.frames.append(img.subsurface(pygame.Rect(
+                    frame_location, self.rect.size)))
+        self.cur_frame = 0
+        self.image = self.frames[self.cur_frame]
+        self.rect = self.rect.move(x, y)
+        _clock.tick(ms)
+
+    def update(self, x, y):
+        self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+        self.image = self.frames[self.cur_frame]
+        _clock.tick(delta_time())
