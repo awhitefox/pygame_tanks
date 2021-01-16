@@ -5,6 +5,7 @@ from tanks.scenes import load_scene, SceneBase, HelpMenu, LevelSelectMenu
 
 
 class MainMenu(SceneBase):
+    """Сцена главного меню"""
     def __init__(self):
         super().__init__()
         GameLogo(SCREEN_SIZE[0] // 2, SCREEN_SIZE[1] // 4, self.all_sprites)

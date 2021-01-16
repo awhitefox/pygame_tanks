@@ -4,6 +4,7 @@ from tanks.scenes import unload_current_scene, SceneBase
 
 
 class HelpMenu(SceneBase):
+    """Сцена меню помощи. Содержит основную информацию об игре и управлении."""
     help_text = [
         'Для победы уничтожьте танк',
         'противника 3 раза',

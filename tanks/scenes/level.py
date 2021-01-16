@@ -5,12 +5,14 @@ from tanks.constants import MAP_SIZE
 from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank
 from tanks.ui import ScreenMessage, font_medium
 from tanks.scenes import load_scene, unload_current_scene, SceneBase
+from typing import List
 
 
 class Level(SceneBase):
+    """Сцена уровня"""
     score_to_win = 3
 
-    def __init__(self, filename, score=None):
+    def __init__(self, filename: str, score: List[int] = None):
         super().__init__()
         self.filename = filename
         self.score = score if score else [0, 0]
@@ -23,7 +25,7 @@ class Level(SceneBase):
         self.start_message = ScreenMessage("Приготовится!", font_medium, 2, self.all_sprites)
         self.end_message = None
 
-    def update(self):
+    def update(self) -> None:
         if self.start_message.alive():
             self.start_message.update()
             return
@@ -61,13 +63,15 @@ class Level(SceneBase):
             self.end_message = ScreenMessage(end_message_text, font_medium, 3, self.all_sprites)
             return
 
-    def draw(self, surface):
+    def draw(self, surface: pygame.Surface) -> None:
         surface.fill((116, 116, 116))  # gray
         pygame.draw.rect(surface, 'black', grid.get_rect())
         super().draw(surface)
 
     @classmethod
-    def load(cls, filename, score=None):
+    def load(cls, filename: str, score: List[int] = None) -> 'Level':
+        """Возвращает новую сцену уровня, построенную по карте из указанного файла.
+        Поиск файла происходит в папке ./levels/"""
         level = cls(filename, score)
         level_map = [list(line.rstrip('\n')) for line in open(os.path.join('levels', filename))]
         for row in range(len(level_map)):
@@ -85,7 +89,8 @@ class Level(SceneBase):
         return level
 
     @staticmethod
-    def get_available():
+    def get_available() -> List[str]:
+        """Возвращает список названий доступных для загрузки уровней."""
         def check(f):
             return os.path.isfile(os.path.join('levels', f)) and f.endswith('.txt')
         return list(map(lambda x: x[:-4], filter(check, os.listdir('levels'))))
