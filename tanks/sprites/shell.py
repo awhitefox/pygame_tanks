@@ -43,7 +43,8 @@ class Shell(pygame.sprite.Sprite):
 
         field = grid.get_rect()
 
-        if self.pos.x + self.rect.size[0] > field.right or self.pos.x < field.left or self.pos.y + self.rect.size[1] > field.bottom or self.pos.y < field.top:
+        if self.pos.x + self.rect.size[0] > field.right or self.pos.x < field.left or self.pos.y + \
+                self.rect.size[1] > field.bottom or self.pos.y < field.top:
             self.explosion_sound.play()
             self.kill()
             return
