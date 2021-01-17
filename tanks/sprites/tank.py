@@ -138,7 +138,7 @@ class TankControlScheme:
         self._shoot = shoot
 
     def get_movement(self) -> int:
-        """Метод для получения напрвления на основе нажатой клавиши"""
+        """Метод для получения направления на основе нажатой клавиши"""
         if pygame.key.get_pressed()[self._up]:
             return NORTH
         elif pygame.key.get_pressed()[self._right]:
