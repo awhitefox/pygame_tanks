@@ -2,6 +2,7 @@ import os.path
 
 import pygame
 
+import tanks.scenes
 from tanks.constants import PIXEL_RATIO
 from tanks.directions import *
 from tanks.grid import cell_to_screen, get_rect
@@ -92,6 +93,7 @@ class Shell(SpriteBase):
 
         if self.pos.x > field.right or self.pos.x < field.left or self.pos.y > field.bottom or self.pos.y < field.top:
             self.kill()
+            Explosion(self.pos.x, self.pos.y)
             return
 
         for group in self.groups():
@@ -102,19 +104,21 @@ class Shell(SpriteBase):
                             if sprite.destroyable:
                                 sprite.kill()
                                 self.kill()
+                                Explosion(self.pos.x, self.pos.y)
                             elif sprite.shell_obstacle:
                                 self.kill()
+                                Explosion(self.pos.x, self.pos.y)
                         elif isinstance(sprite, Shell):
                             self.kill()
                             sprite.kill()
+                            Explosion(self.pos.x, self.pos.y)
 
     def is_collided_with(self, sprite):
         return self.rect.colliderect(sprite.rect)
 
 
 class AnimatedSprite(SpriteBase):
-    def __init__(self, name, columns, rows, x, y, ms):
-        super().__init__(x, y, name)
+    def __init__(self, name, columns, rows, x, y, ms, *groups):
         self.frames = []
         img = load_image(name)
         self.rect = pygame.Rect(0, 0, img.get_width() // columns,
@@ -123,18 +127,19 @@ class AnimatedSprite(SpriteBase):
             for i in range(columns):
                 frame_location = (self.rect.w * i, self.rect.h * j)
                 self.frames.append(img.subsurface(pygame.Rect(
-                    frame_location, self.rect.size)))
+                    frame_location[0], frame_location[1], self.rect.width, self.rect.height)))
         self.cur_frame = 0
-        self.image = self.frames[self.cur_frame]
-        self.rect = self.rect.move(x, y)
-        _clock.tick(ms)
+        for i in range(len(self.frames)):
+            self.sheet = self.frames[self.cur_frame]
+            super().__init__(x, y, *groups)
+            self.update()
+            _clock.tick(ms)
 
-    def update(self, x, y):
+    def update(self):
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
         self.image = self.frames[self.cur_frame]
-        _clock.tick(delta_time())
 
 
 class Explosion(AnimatedSprite):
     def __init__(self, x, y):
-        super().__init__('explosion.png', 3, 0, x, y, 0)
+        super().__init__('explosion.png', 3, 1, x, y, 5000, tanks.scenes.current_scene().all_sprites)
