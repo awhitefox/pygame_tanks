@@ -28,7 +28,7 @@ class LevelSelectMenu(SceneBase):
         self.btn_next.on_click = lambda b: self.next_page()
         self.btn_back.on_click = lambda b: unload_current_scene()
         for btn in self.level_buttons:
-            btn.on_click = lambda b: load_scene(Level.load(b.raw_text + '.txt'))
+            btn.on_click = lambda b: load_scene(Level(b.raw_text + '.txt'))
 
         self.render_page()
 

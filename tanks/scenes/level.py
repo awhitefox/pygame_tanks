@@ -13,10 +13,21 @@ class Level(SceneBase):
     score_to_win = 3
 
     def __init__(self, filename: str, score: List[int] = None):
+        """Инициализирует новую сцену уровня, построенную по карте из указанного файла.
+        Поиск файла происходит в папке ./levels/"""
+
         super().__init__()
         self.filename = filename
         self.score = score if score else [0, 0]
         self.game_finished = False
+
+        level_map = [list(line.rstrip('\n')) for line in open(os.path.join('levels', filename))]
+        blocks = [BrickWall, Bush, ConcreteWall, Water, Spike]
+        for row in range(len(level_map)):
+            for col in range(len(level_map[row])):
+                for block in blocks:
+                    if level_map[row][col] == block.char:
+                        block(col, row, self.all_sprites)
 
         grid_x = MAP_SIZE[0] // 2 - 1
         self.tank1 = Tank(*grid.cell_to_screen(grid_x, MAP_SIZE[1] - 2), True, self.all_sprites)
@@ -34,7 +45,7 @@ class Level(SceneBase):
             if not self.end_message.alive():
                 if not self.game_finished:
                     unload_current_scene()
-                    load_scene(Level.load(self.filename, self.score))
+                    load_scene(Level(self.filename, self.score))
                 else:
                     unload_current_scene()
             return
@@ -67,26 +78,6 @@ class Level(SceneBase):
         surface.fill((116, 116, 116))  # gray
         pygame.draw.rect(surface, 'black', grid.get_rect())
         super().draw(surface)
-
-    @classmethod
-    def load(cls, filename: str, score: List[int] = None) -> 'Level':
-        """Возвращает новую сцену уровня, построенную по карте из указанного файла.
-        Поиск файла происходит в папке ./levels/"""
-        level = cls(filename, score)
-        level_map = [list(line.rstrip('\n')) for line in open(os.path.join('levels', filename))]
-        for row in range(len(level_map)):
-            for col in range(len(level_map[row])):
-                if level_map[row][col] == BrickWall.char:
-                    BrickWall(col, row, level.all_sprites)
-                if level_map[row][col] == Bush.char:
-                    Bush(col, row, level.all_sprites)
-                if level_map[row][col] == ConcreteWall.char:
-                    ConcreteWall(col, row, level.all_sprites)
-                if level_map[row][col] == Water.char:
-                    Water(col, row, level.all_sprites)
-                if level_map[row][col] == Spike.char:
-                    Spike(col, row, level.all_sprites)
-        return level
 
     @staticmethod
     def get_available() -> List[str]:
