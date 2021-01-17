@@ -2,13 +2,11 @@ import pygame
 from tanks import grid
 from tanks.time import delta_time
 from tanks.directions import NORTH, WEST, SOUTH, EAST, direction_to_vector
-from tanks.sprites import load_image, GridSpriteBase
-from tanks.sounds import load_sound
+from tanks.sprites import load_image, GridSpriteBase, ShellExplosion
 
 
 class Shell(pygame.sprite.Sprite):
     """Класс снаряда, движется в заданном направлении"""
-    explosion_sound = load_sound('shell_explosion.wav')
     sheet = load_image('shell.png')
     speed = 400
 
@@ -45,7 +43,6 @@ class Shell(pygame.sprite.Sprite):
 
         if self.pos.x + self.rect.size[0] > field.right or self.pos.x < field.left or self.pos.y + \
                 self.rect.size[1] > field.bottom or self.pos.y < field.top:
-            self.explosion_sound.play()
             self.kill()
             return
 
@@ -57,11 +54,12 @@ class Shell(pygame.sprite.Sprite):
                             if sprite.destroyable:
                                 sprite.kill()
                                 self.kill()
-                                self.explosion_sound.play()
                             elif sprite.shell_obstacle:
                                 self.kill()
-                                self.explosion_sound.play()
                         elif isinstance(sprite, Shell):
-                            self.kill()
                             sprite.kill()
-                            self.explosion_sound.play()
+                            self.kill()
+
+    def kill(self) -> None:
+        ShellExplosion(*self.pos, *self.groups())
+        super().kill()

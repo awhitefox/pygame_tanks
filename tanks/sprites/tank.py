@@ -77,7 +77,6 @@ class Tank(SpriteBase):
                     if isinstance(sprite, Shell):
                         self.kill()
                         sprite.kill()
-                        self.explosion_sound.play()
                         return
 
         if new_rect.x + self.rect.size[0] > field.right or new_rect.x < field.left \
@@ -102,6 +101,10 @@ class Tank(SpriteBase):
             pos = self.pos.x + self.rect.w + off, self.pos.y + self.rect.h / 2
         Shell(*pos, self.direction, *self.groups())
         self.shoot_sound.play()
+
+    def kill(self) -> None:
+        self.explosion_sound.play()
+        super().kill()
 
     def _get_image(self) -> pygame.Surface:
         """Защищенный метод для получения картинки на основе направления куда смотрит танк"""
