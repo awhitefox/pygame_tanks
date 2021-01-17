@@ -1,6 +1,6 @@
 import os.path
 import pygame.mixer
-VOLUME = 0.75
+VOLUME = 0.5
 pygame.mixer.init()
 
 
