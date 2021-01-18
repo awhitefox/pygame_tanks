@@ -1,4 +1,3 @@
-from tanks.sprites.sprite_base import SpriteBase
 from tanks.sprites.animated_sprite import AnimatedSprite
 from tanks.sprites.grid_sprites import *
 from tanks.sprites.shell_explosion import ShellExplosion

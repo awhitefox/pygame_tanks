@@ -3,12 +3,12 @@ from tanks.constants import PIXEL_RATIO
 from tanks.directions import *
 from tanks.grid import get_rect
 from tanks.time import delta_time
-from tanks.sprites import SpriteBase, GridSpriteBase, Shell
+from tanks.sprites import GridSpriteBase, Shell
 from tanks.images import load_image, cut_sheet
 from tanks.sounds import load_sound
 
 
-class Tank(SpriteBase):
+class Tank(pygame.sprite.Sprite):
     """Класс танка"""
     distance_to_animate = PIXEL_RATIO * 2
     shell_spawn_offset = PIXEL_RATIO
@@ -18,13 +18,12 @@ class Tank(SpriteBase):
     shoot_sound = load_sound('tank_fire.flac')
     explosion_sound = load_sound('tank_explosion.flac')
 
-    sheet = load_image('tanks.png')
-    frames = cut_sheet(sheet, 8, 2)
+    frames = cut_sheet(load_image('tanks.png'), 8, 2)
 
     def __init__(self, x: float, y: float, is_default_player: bool, *groups: pygame.sprite.Group):
-        self.distance = 0
+        super().__init__(*groups)
         x, y = x + PIXEL_RATIO, y + PIXEL_RATIO  # center tank in 2x2 square
-        super().__init__(x, y, *groups)
+        self.distance = 0
         self.seconds_from_last_shot = self.shoot_cooldown
         self.frame = 0
         self.pos = pygame.Vector2(x, y)
