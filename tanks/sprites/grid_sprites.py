@@ -34,7 +34,7 @@ class Bush(GridSpriteBase):
     char = '*'
     tank_obstacle = False
     shell_obstacle = False
-    layer = 1
+    layer = 2
 
 
 class Water(GridSpriteBase):

@@ -10,6 +10,7 @@ class Shell(pygame.sprite.Sprite):
     """Класс снаряда, движется в заданном направлении"""
     sheet = load_image('shell.png')
     speed = 400
+    layer = 1
 
     def __init__(self, x: float, y: float, direction: int, *groups: pygame.sprite.Group):
         super().__init__(*groups)
