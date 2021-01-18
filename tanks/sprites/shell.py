@@ -2,7 +2,8 @@ import pygame
 from tanks import grid
 from tanks.time import delta_time
 from tanks.directions import NORTH, WEST, SOUTH, EAST, direction_to_vector
-from tanks.sprites import load_image, GridSpriteBase, ShellExplosion
+from tanks.sprites import GridSpriteBase, ShellExplosion
+from tanks.images import load_image
 
 
 class Shell(pygame.sprite.Sprite):

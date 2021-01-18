@@ -1,6 +1,6 @@
 import pygame
-from ..grid import cell_to_screen
-from ..images import load_image
+from tanks.grid import cell_to_screen
+from tanks.images import load_image
 
 
 class GridSpriteBase(pygame.sprite.Sprite):
