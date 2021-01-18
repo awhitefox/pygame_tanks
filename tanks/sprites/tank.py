@@ -3,12 +3,13 @@ from tanks.constants import PIXEL_RATIO
 from tanks.directions import *
 from tanks.grid import get_rect
 from tanks.time import delta_time
-from tanks.sprites import SpriteBase, GridSpriteBase, Shell
+from tanks.sprites import GridSpriteBase, Shell
 from tanks.images import load_image, cut_sheet
 from tanks.sounds import load_sound
 
 
-class Tank(SpriteBase):
+class Tank(pygame.sprite.Sprite):
+    """Класс танка"""
     distance_to_animate = PIXEL_RATIO * 2
     shell_spawn_offset = PIXEL_RATIO
     shoot_cooldown = 2.5
@@ -17,20 +18,21 @@ class Tank(SpriteBase):
     shoot_sound = load_sound('tank_fire.flac')
     explosion_sound = load_sound('tank_explosion.flac')
 
-    sheet = load_image('tanks.png')
-    frames = cut_sheet(sheet, 8, 2)
+    frames = cut_sheet(load_image('tanks.png'), 8, 2)
 
-    def __init__(self, x, y, is_default_control_scheme, *groups):
-        self.distance = 0
+    def __init__(self, x: float, y: float, is_default_player: bool, *groups: pygame.sprite.Group):
+        super().__init__(*groups)
         x, y = x + PIXEL_RATIO, y + PIXEL_RATIO  # center tank in 2x2 square
-        super().__init__(x, y, *groups)
+        self.distance = 0
         self.seconds_from_last_shot = self.shoot_cooldown
         self.frame = 0
         self.pos = pygame.Vector2(x, y)
-        if is_default_control_scheme:
+        if is_default_player:
+            self.control_scheme = TankControlScheme.default()
             self.images = self.frames[:8]
             self.direction = NORTH
         else:
+            self.control_scheme = TankControlScheme.alternative()
             self.images = self.frames[8:]
             self.direction = SOUTH
         self.image = self._get_image()
@@ -42,14 +44,9 @@ class Tank(SpriteBase):
 
         self.movement = None
 
-        if is_default_control_scheme:
-            self.control_scheme = TankControlScheme.default()
-        else:
-            self.control_scheme = TankControlScheme.alternative()
-
         self.vector_velocity = pygame.Vector2(0, 0)
 
-    def update(self):
+    def update(self) -> None:
         field = get_rect()
 
         self.movement = self.control_scheme.get_movement()
@@ -79,7 +76,6 @@ class Tank(SpriteBase):
                     if isinstance(sprite, Shell):
                         self.kill()
                         sprite.kill()
-                        self.explosion_sound.play()
                         return
 
         if new_rect.x + self.rect.size[0] > field.right or new_rect.x < field.left \
@@ -90,7 +86,8 @@ class Tank(SpriteBase):
         self.pos = new_pos
         self.rect = new_rect
 
-    def shoot(self):
+    def shoot(self) -> None:
+        """Метод для инициализации выстрела"""
         off = self.shell_spawn_offset
         pos = None
         if self.direction == NORTH:
@@ -104,7 +101,12 @@ class Tank(SpriteBase):
         Shell(*pos, self.direction, *self.groups())
         self.shoot_sound.play()
 
-    def _get_image(self):
+    def kill(self) -> None:
+        self.explosion_sound.play()
+        super().kill()
+
+    def _get_image(self) -> pygame.Surface:
+        """Защищенный метод для получения картинки на основе направления куда смотрит танк"""
         frame = 0
         if self.distance > self.distance_to_animate:
             self.frame += 1 if self.frame % 2 == 0 else -1
@@ -126,14 +128,16 @@ class Tank(SpriteBase):
 
 
 class TankControlScheme:
-    def __init__(self, up, right, down, left, shoot):
+    """Класс схемы управления танком"""
+    def __init__(self, up: int, right: int, down: int, left: int, shoot: int):
         self._up = up
         self._right = right
         self._down = down
         self._left = left
         self._shoot = shoot
 
-    def get_movement(self):
+    def get_movement(self) -> int:
+        """Метод для получения направления на основе нажатой клавиши"""
         if pygame.key.get_pressed()[self._up]:
             return NORTH
         elif pygame.key.get_pressed()[self._right]:
@@ -144,12 +148,17 @@ class TankControlScheme:
             return WEST
 
     def shoot_pressed(self) -> bool:
+        """Проверка на нажатие кнопки выстрела"""
         return pygame.key.get_pressed()[self._shoot]
 
     @classmethod
-    def default(cls):
+    def default(cls) -> 'TankControlScheme':
+        """Создание объекта класса TankControlScheme с клавишами управления для 1-го игрока
+        (WASD - движение, Spacebar - выстрел)"""
         return cls(pygame.K_w, pygame.K_d, pygame.K_s, pygame.K_a, pygame.K_SPACE)
 
     @classmethod
-    def alternative(cls):
+    def alternative(cls) -> 'TankControlScheme':
+        """Создание объекта класса TankControlScheme с клавишами управления для 2-го игрока
+        (движение стрелками, Enter - выстрел)"""
         return cls(pygame.K_UP, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RETURN)

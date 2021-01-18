@@ -1,10 +1,13 @@
-from tanks.sprites import SpriteBase
+import pygame.sprite
 from tanks.images import load_image
 
 
-class GameLogo(SpriteBase):
+class GameLogo(pygame.sprite.Sprite):
+    """Спрайт логотипа игры"""
     sheet = load_image('logo.png')
 
-    def __init__(self, center_x, center_y, *groups):
-        super().__init__(0, 0, *groups)
+    def __init__(self, center_x: float, center_y: float, *groups: pygame.sprite.Group):
+        super().__init__(*groups)
+        self.image = self.sheet
+        self.rect = self.image.get_rect()
         self.rect.center = center_x, center_y

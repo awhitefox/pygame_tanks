@@ -1,17 +1,21 @@
-from ..grid import cell_to_screen
-from ..images import load_image
-from . import SpriteBase
+import pygame
+from tanks.grid import cell_to_screen
+from tanks.images import load_image
 
 
-class GridSpriteBase(SpriteBase):
+class GridSpriteBase(pygame.sprite.Sprite):
+    """Базовый класс спрайта, расположенного по сетке, используется для наследования."""
+    sheet = None
     char = None
     destroyable = False
     tank_obstacle = True
     shell_obstacle = True
     layer = 0
 
-    def __init__(self, grid_x, grid_y, *groups):
-        super().__init__(*cell_to_screen(grid_x, grid_y), *groups)
+    def __init__(self, grid_x: int, grid_y: int, *groups: pygame.sprite.Group):
+        super().__init__(*groups)
+        self.image = self.sheet
+        self.rect = pygame.Rect(*cell_to_screen(grid_x, grid_y), *self.image.get_size())
 
 
 class ConcreteWall(GridSpriteBase):
@@ -30,7 +34,7 @@ class Bush(GridSpriteBase):
     char = '*'
     tank_obstacle = False
     shell_obstacle = False
-    layer = 1
+    layer = 2
 
 
 class Water(GridSpriteBase):

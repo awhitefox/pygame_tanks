@@ -5,6 +5,8 @@ from tanks.scenes import load_scene, unload_current_scene, SceneBase, Level
 
 
 class LevelSelectMenu(SceneBase):
+    """Сцена меню выбора уровня"""
+
     def __init__(self):
         super().__init__()
         self.levels = Level.get_available()
@@ -23,14 +25,15 @@ class LevelSelectMenu(SceneBase):
         self.btn_back = TextButton(x * 2, y + 40, 'Назад', font_small, self.all_sprites)
 
         self.btn_prev.on_click = lambda b: self.prev_page()
-        self.btn_next.on_click = lambda b: self.next_btn()
+        self.btn_next.on_click = lambda b: self.next_page()
         self.btn_back.on_click = lambda b: unload_current_scene()
         for btn in self.level_buttons:
-            btn.on_click = lambda b: load_scene(Level.load(b.raw_text + '.txt'))
+            btn.on_click = lambda b: load_scene(Level(b.raw_text + '.txt'))
 
         self.render_page()
 
-    def render_page(self):
+    def render_page(self) -> None:
+        """Обновляет интерфейс в соответствии с текущей страницей списка уровней."""
         i = self.current_page
         n = len(self.level_buttons)
         levels = self.levels[n * i:n * (i + 1)]
@@ -42,10 +45,12 @@ class LevelSelectMenu(SceneBase):
             else:
                 self.level_buttons[j].enabled = False
 
-    def prev_page(self):
+    def prev_page(self) -> None:
+        """Перелистывает список уровней на предыдущую страницу, если это возможно."""
         self.current_page = max(self.current_page - 1, 0)
         self.render_page()
 
-    def next_btn(self):
+    def next_page(self) -> None:
+        """Перелистывает список уровней на следующую страницу, если это возможно."""
         self.current_page = min(self.current_page + 1, len(self.levels) // len(self.level_buttons))
         self.render_page()

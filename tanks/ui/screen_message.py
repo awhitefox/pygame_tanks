@@ -4,11 +4,13 @@ from tanks.time import delta_time
 
 
 class ScreenMessage(pygame.sprite.Sprite):
+    """Элемент UI, отображает сообщение на экране в течении заданного времени."""
     layer = 10
     border_thickness = 10
     padding = 75
 
-    def __init__(self, text, font, duration, *groups):
+    def __init__(self, text: str, font: pygame.font.Font, duration: float,
+                 *groups: pygame.font.Font):
         super().__init__(*groups)
         w, h = font.size(text)
         self.rect = pygame.Rect(0, 0, w + self.padding, h + self.padding)
@@ -26,7 +28,7 @@ class ScreenMessage(pygame.sprite.Sprite):
         text_rect = pygame.Rect((w - tw) / 2, (h - th) / 2, tw, th)
         self.image.blit(self.font.render(self.text, True, (255, 255, 255)), text_rect)
 
-    def update(self):
+    def update(self) -> None:
         self.duration -= delta_time()
         if self.duration <= 0:
             self.kill()

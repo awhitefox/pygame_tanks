@@ -2,16 +2,17 @@ import pygame
 from tanks import grid
 from tanks.time import delta_time
 from tanks.directions import NORTH, WEST, SOUTH, EAST, direction_to_vector
-from tanks.sprites import load_image, GridSpriteBase
-from tanks.sounds import load_sound
+from tanks.sprites import GridSpriteBase, ShellExplosion
+from tanks.images import load_image
 
 
 class Shell(pygame.sprite.Sprite):
-    explosion_sound = load_sound('shell_explosion.wav')
+    """Класс снаряда, движется в заданном направлении"""
     sheet = load_image('shell.png')
     speed = 400
+    layer = 1
 
-    def __init__(self, x, y, direction, *groups):
+    def __init__(self, x: float, y: float, direction: int, *groups: pygame.sprite.Group):
         super().__init__(*groups)
         rotate = 0
         self.vector_velocity = direction_to_vector(direction, self.speed)
@@ -35,15 +36,15 @@ class Shell(pygame.sprite.Sprite):
         self.rect.size = self.image.get_size()
         self.pos = pygame.Vector2(self.rect.x, self.rect.y)
 
-    def update(self):
+    def update(self) -> None:
         self.pos += self.vector_velocity * delta_time()
         self.rect.x = self.pos.x
         self.rect.y = self.pos.y
 
         field = grid.get_rect()
 
-        if self.pos.x + self.rect.size[0] > field.right or self.pos.x < field.left or self.pos.y + self.rect.size[1] > field.bottom or self.pos.y < field.top:
-            self.explosion_sound.play()
+        if self.pos.x + self.rect.size[0] > field.right or self.pos.x < field.left or self.pos.y + \
+                self.rect.size[1] > field.bottom or self.pos.y < field.top:
             self.kill()
             return
 
@@ -55,11 +56,12 @@ class Shell(pygame.sprite.Sprite):
                             if sprite.destroyable:
                                 sprite.kill()
                                 self.kill()
-                                self.explosion_sound.play()
                             elif sprite.shell_obstacle:
                                 self.kill()
-                                self.explosion_sound.play()
                         elif isinstance(sprite, Shell):
-                            self.kill()
                             sprite.kill()
-                            self.explosion_sound.play()
+                            self.kill()
+
+    def kill(self) -> None:
+        ShellExplosion(*self.pos, *self.groups())
+        super().kill()
