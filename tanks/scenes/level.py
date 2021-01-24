@@ -33,7 +33,7 @@ class Level(SceneBase):
         self.tank1 = Tank(*grid.cell_to_screen(grid_x, MAP_SIZE[1] - 2), True, self.all_sprites)
         self.tank2 = Tank(*grid.cell_to_screen(grid_x, 0), False, self.all_sprites)
 
-        self.start_message = ScreenMessage("Приготовится!", font_medium, 2, self.all_sprites)
+        self.start_message = ScreenMessage("Приготовиться!", font_medium, 2, self.all_sprites)
         self.end_message = None
 
     def update(self) -> None:
