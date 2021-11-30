@@ -3,7 +3,7 @@ from tanks.time import delta_time
 
 
 class AnimatedSprite(pygame.sprite.Sprite):
-    """Базовый класс анимированного спрайта, используется для наследования."""
+    """애니메이션 스프라이트의 기본 클래스는 상속에 사용됩니다."""
     frames = None
     seconds_per_frame = None
 

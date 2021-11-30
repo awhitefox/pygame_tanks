@@ -4,7 +4,7 @@ from tanks.time import delta_time
 
 
 class ScreenMessage(pygame.sprite.Sprite):
-    """Элемент UI, отображает сообщение на экране в течении заданного времени."""
+    """UI 요소는 지정된 시간 동안 화면에 메시지를 표시합니다."""
     layer = 10
     border_thickness = 10
     padding = 75

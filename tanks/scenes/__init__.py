@@ -4,3 +4,9 @@ from tanks.scenes.level import Level
 from tanks.scenes.level_select_menu import LevelSelectMenu
 from tanks.scenes.help_menu import HelpMenu
 from tanks.scenes.main_menu import MainMenu
+from tanks.scenes.ghostmode import GhostMode
+from tanks.scenes.game_mode import GameMode
+from tanks.scenes.mode_type import ModeType
+from tanks.scenes.speed1 import Speed1
+from tanks.scenes.speed2 import Speed2
+from tanks.scenes.speedselect import SpeedSelect

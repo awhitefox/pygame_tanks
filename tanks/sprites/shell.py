@@ -12,9 +12,10 @@ class Shell(pygame.sprite.Sprite):
     speed = 400
     layer = 1
 
-    def __init__(self, x: float, y: float, direction: int, *groups: pygame.sprite.Group):
+    def __init__(self, s_speed: int, x: float, y: float, direction: int, *groups: pygame.sprite.Group):
         super().__init__(*groups)
         rotate = 0
+        self.speed = s_speed
         self.vector_velocity = direction_to_vector(direction, self.speed)
         size = self.sheet.get_size()
         self.rect = pygame.Rect(0, 0, 0, 0)
@@ -65,3 +66,5 @@ class Shell(pygame.sprite.Sprite):
     def kill(self) -> None:
         ShellExplosion(*self.pos, *self.groups())
         super().kill()
+
+

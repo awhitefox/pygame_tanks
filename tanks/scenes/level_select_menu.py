@@ -5,7 +5,7 @@ from tanks.scenes import load_scene, unload_current_scene, SceneBase, Level
 
 
 class LevelSelectMenu(SceneBase):
-    """Сцена меню выбора уровня"""
+    """레벨 선택 메뉴 장면"""
 
     def __init__(self):
         super().__init__()
@@ -14,15 +14,15 @@ class LevelSelectMenu(SceneBase):
         self.level_buttons = []
 
         x = SCREEN_SIZE[0] // 4
-        self.title = Label(x * 2, 50, 'Выбор уровня', font_medium, self.all_sprites)
+        self.title = Label(x * 2, 50, 'Level selection', font_medium, self.all_sprites)
         for i in range(12):
             btn = TextButton(x * 2, 100 + 45 * (i + 1), '', font_small, self.all_sprites)
             self.level_buttons.append(btn)
         y = SCREEN_SIZE[1] - 80
-        self.btn_prev = TextButton(x, y, 'ПРЕД', font_small, self.all_sprites)
+        self.btn_prev = TextButton(x, y, 'Previous', font_small, self.all_sprites)
         self.page_label = Label(x * 2, y, '', font_medium, self.all_sprites)
-        self.btn_next = TextButton(x * 3, y, 'СЛЕД', font_small, self.all_sprites)
-        self.btn_back = TextButton(x * 2, y + 40, 'Назад', font_small, self.all_sprites)
+        self.btn_next = TextButton(x * 3, y, 'Next', font_small, self.all_sprites)
+        self.btn_back = TextButton(x * 2, y + 40, 'Back', font_small, self.all_sprites)
 
         self.btn_prev.on_click = lambda b: self.prev_page()
         self.btn_next.on_click = lambda b: self.next_page()
