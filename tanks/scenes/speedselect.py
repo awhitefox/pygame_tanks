@@ -13,14 +13,18 @@ class SpeedSelect(SceneBase):
         self.mode_type = Speed2.get_available()
         self.current_page = 0
         self.mode_buttons = []
-
-        x = SCREEN_SIZE[0] // 4
+        x, y = SCREEN_SIZE[0] // 4, SCREEN_SIZE[1]
+        
         self.title = Label(x * 2, 50, 'SPEED SELECTION', font_medium, self.all_sprites)
         btn1 = TextButton(x * 2, 145, '1.5x speed', font_small, self.all_sprites)
         btn2 = TextButton(x * 2, 190, '2.0x speed', font_small, self.all_sprites)
 
         btn1.on_click = lambda b: load_scene(Speed1(self.filename))
         btn2.on_click = lambda b: load_scene(Speed2(self.filename))
+
+        back_btn = TextButton(SCREEN_SIZE[0] // 2, y - 40, 'Back', font_small, self.all_sprites)
+        back_btn.on_click = lambda b: unload_current_scene()
+
 
         self.render_page()
     
