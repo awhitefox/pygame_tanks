@@ -91,6 +91,10 @@ class Tank(pygame.sprite.Sprite):
                         self.s_speed += 50
                         sprite.kill()
                         return
+                    if (isinstance(sprite, GridSpriteBase) and sprite.mirroring) :
+                        self.mirror_shoot(self.s_speed)
+                        self.seconds_from_last_shot = 0
+                        return
 
         if new_rect.x + self.rect.size[0] > field.right or new_rect.x < field.left \
                 or new_rect.y + self.rect.size[1] > field.bottom or new_rect.y < field.top:
@@ -115,6 +119,21 @@ class Tank(pygame.sprite.Sprite):
             pos = self.pos.x - off, self.pos.y + self.rect.h / 2
         elif self.direction == EAST:
             pos = self.pos.x + self.rect.w + off, self.pos.y + self.rect.h / 2
+        Shell(s_speed, *pos, self.direction, *self.groups())
+        self.shoot_sound.play()
+    
+    def mirror_shoot(self, s_speed: int) -> None:
+        """샷 초기화 방법"""
+        off = self.shell_spawn_offset
+        pos = None
+        if self.direction == NORTH:
+            pos = self.pos.y + self.rect.h + off, self.pos.x + (self.rect.w / 2)
+        elif self.direction == SOUTH:
+            pos = self.pos.y - off, self.pos.x + (self.rect.w / 2)
+        elif self.direction == WEST:
+            pos = self.pos.y + self.rect.h / 2, self.pos.x + self.rect.w + off, 
+        elif self.direction == EAST:
+            pos = self.pos.y + self.rect.h / 2, self.pos.x - off
         Shell(s_speed, *pos, self.direction, *self.groups())
         self.shoot_sound.play()
 

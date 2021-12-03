@@ -35,8 +35,10 @@ class Speed1(SceneBase):
         self.tank1 = Tank(*grid.cell_to_screen(grid_x, MAP_SIZE[1] - 2), True, self.all_sprites)
         self.tank2 = Tank(*grid.cell_to_screen(grid_x, 0), False, self.all_sprites)
 
-        Tank.speed *= 1.5
-        Shell.speed *= 1.5
+        Tank.speed = 225
+        Tank.shoot_cooldown = 0.75
+        Shell.speed = 100
+        
 
         self.start_message = ScreenMessage("Приготовиться!", font_medium, 2, self.all_sprites)
         self.end_message = None

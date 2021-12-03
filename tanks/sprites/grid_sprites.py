@@ -15,6 +15,7 @@ class GridSpriteBase(pygame.sprite.Sprite):
     die_obstacle = False
     speed_up = False
     s_speedup = False
+    mirroring = False
     layer = 0
 
     def __init__(self, grid_x: int, grid_y: int, *groups: pygame.sprite.Group):
@@ -56,6 +57,8 @@ class Spike(GridSpriteBase):
 class Mirror(GridSpriteBase):
     sheet = load_image('mirror.png')
     char = '+'
+    shell_obstacle = True
+    mirroring = True
     
 class Lava(GridSpriteBase):
     sheet = load_image('lava.png')

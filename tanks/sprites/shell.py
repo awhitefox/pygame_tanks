@@ -15,6 +15,9 @@ class Shell(pygame.sprite.Sprite):
     def __init__(self, s_speed: int, x: float, y: float, direction: int, *groups: pygame.sprite.Group):
         super().__init__(*groups)
         rotate = 0
+        self.x = x
+        self.y = y
+        self.direct = direction
         self.speed = s_speed
         self.vector_velocity = direction_to_vector(direction, self.speed)
         size = self.sheet.get_size()
@@ -62,6 +65,20 @@ class Shell(pygame.sprite.Sprite):
                         elif isinstance(sprite, Shell):
                             sprite.kill()
                             self.kill()
+                        # if isinstance(sprite, GridSpriteBase) and sprite.mirroring:
+                        #     if self.direct == NORTH:
+                        #         self.rect.center = self.x - self.size[0] / 2, self.y
+                        #         self.rotate = 180
+                        #     if self.direct == SOUTH:
+                        #         self.rect.center = self.x - self.size[0] / 2, self.y - self.size[1]
+                        #     if self.direct == EAST:
+                        #         self.rect.center = self.x - self.size[1], self.y - self.size[0] / 2
+                        #         self.rotate = 90
+                        #     if self.direct == WEST:
+                        #         self.rect.center = self.x, self.y - self.size[0] / 2
+                        #         self.rotate = -90
+                            
+
 
     def kill(self) -> None:
         ShellExplosion(*self.pos, *self.groups())
