@@ -37,7 +37,7 @@ class Speed2(SceneBase):
 
         Tank.speed = 300
         Tank.shoot_cooldown = 0.5
-        Shell.speed = 2000
+        Shell.speed = 800
 
         self.start_message = ScreenMessage("Приготовиться!", font_medium, 2, self.all_sprites)
         self.end_message = None
