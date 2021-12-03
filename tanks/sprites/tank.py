@@ -15,6 +15,7 @@ class Tank(pygame.sprite.Sprite):
     shoot_cooldown = 1
     speed = 150
     s_speed = 400
+    point = 0
 
     #탱크 사운드, 이미지
     shoot_sound = load_sound('tank_fire.flac')
@@ -93,6 +94,7 @@ class Tank(pygame.sprite.Sprite):
                         return
                     if (isinstance(sprite, GridSpriteBase) and sprite.pointup):
                         sprite.kill()
+                        self.point_up()
                         return
 
         if new_rect.x + self.rect.size[0] > field.right or new_rect.x < field.left \
@@ -102,6 +104,9 @@ class Tank(pygame.sprite.Sprite):
         self.distance += (new_pos - self.pos).length()
         self.pos = new_pos
         self.rect = new_rect
+
+    def point_up(self) -> None:
+        self.point = self.point + 100
 
     def speedup(self) -> None:
             self.speed = self.speed + 30

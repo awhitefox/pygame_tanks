@@ -40,7 +40,7 @@ class Speed1(SceneBase):
         Shell.speed = 600
         
 
-        self.start_message = ScreenMessage("Приготовиться!", font_medium, 2, self.all_sprites)
+        self.start_message = ScreenMessage("Ready!", font_medium, 2, self.all_sprites)
         self.end_message = None
 
     def update(self) -> None:
@@ -68,13 +68,13 @@ class Speed1(SceneBase):
 
         if finish_round:
             if self.score == [self.score_to_win, self.score_to_win]:
-                end_message_text = 'Ничья!'
+                end_message_text = 'Draw!'
                 self.game_finished = True
             elif self.score[0] == self.score_to_win:
-                end_message_text = 'Игрок 1 победил!'
+                end_message_text = 'Player 1 win!'
                 self.game_finished = True
             elif self.score[1] == self.score_to_win:
-                end_message_text = 'Игрок 2 победил!'
+                end_message_text = 'Player 2 win!'
                 self.game_finished = True
             else:
                 end_message_text = f'{self.score[0]} : {self.score[1]}'

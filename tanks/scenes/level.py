@@ -25,7 +25,6 @@ class Level(SceneBase):
         level_map = [list(line.rstrip('\n')) for line in open(os.path.join('levels', filename))]
 
         #####################
-        print(level_map[-1])
         if(len(level_map[-1])<10):
             Shell.shootrange=int("".join(level_map[-1]))
             del level_map[-1]
