@@ -91,9 +91,8 @@ class Tank(pygame.sprite.Sprite):
                         self.s_speed += 50
                         sprite.kill()
                         return
-                    if (isinstance(sprite, GridSpriteBase) and sprite.mirroring) :
-                        self.mirror_shoot(self.s_speed)
-                        self.seconds_from_last_shot = 0
+                    if (isinstance(sprite, GridSpriteBase) and sprite.pointup):
+                        sprite.kill()
                         return
 
         if new_rect.x + self.rect.size[0] > field.right or new_rect.x < field.left \

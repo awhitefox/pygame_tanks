@@ -15,7 +15,7 @@ class GridSpriteBase(pygame.sprite.Sprite):
     die_obstacle = False
     speed_up = False
     s_speedup = False
-    mirroring = False
+    pointup = False
     layer = 0
 
     def __init__(self, grid_x: int, grid_y: int, *groups: pygame.sprite.Group):
@@ -105,3 +105,16 @@ class Ghost(GridSpriteBase):
     shell_obstacle = False
     die_obstacle = True
 
+class Coin(GridSpriteBase):
+    sheet = load_image('dollar.png')
+    char = '@'
+    tank_obstacle = False
+    shell_obstacle = False
+    pointup = True
+
+class Coins(GridSpriteBase):
+    sheet = load_image('dollars.png')
+    char = '^'
+    tank_obstacle = False
+    shell_obstacle = False
+    pointup = True
