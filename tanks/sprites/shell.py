@@ -13,13 +13,14 @@ class Shell(pygame.sprite.Sprite):
     layer = 1
     shootrange=10000
 
-    def __init__(self, s_speed: int, x: float, y: float, direction: int, *groups: pygame.sprite.Group):
+    def __init__(self, s_speed: int, s_shootrange:int, x: float, y: float, direction: int, *groups: pygame.sprite.Group):
         super().__init__(*groups)
         rotate = 0
         self.x = x
         self.y = y
         self.direct = direction
         self.speed = s_speed
+        self.shootrange = s_shootrange
         self.vector_velocity = direction_to_vector(direction, self.speed)
         size = self.sheet.get_size()
         self.rect = pygame.Rect(0, 0, 0, 0)
@@ -47,7 +48,7 @@ class Shell(pygame.sprite.Sprite):
         distx=abs(self.pos.x-self.initalpos.x)
         disty=abs(self.pos.y-self.initalpos.y)
         print("def update(self) -> None:",distx,disty)
-        if(max(distx,disty)>Shell.shootrange):
+        if(max(distx,disty)>self.shootrange):
             self.kill()
             return
 

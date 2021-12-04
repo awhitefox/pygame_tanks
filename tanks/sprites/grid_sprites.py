@@ -15,7 +15,7 @@ class GridSpriteBase(pygame.sprite.Sprite):
     die_obstacle = False
     speed_up = False  
     s_speedup = False  
-    range = False
+    s_shootrange = False
     pointup = False
     layer = 0
 
@@ -100,7 +100,7 @@ class Range(GridSpriteBase):
     layer = 0
     tank_obstacle = False
     shell_obstacle = False
-    range = True
+    s_shootrange = True
     
 class Shells(GridSpriteBase):
     sheet = load_image('shells.png')

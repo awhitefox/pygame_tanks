@@ -33,6 +33,8 @@ class Tank(pygame.sprite.Sprite):
         self.seconds_from_last_shot = self.shoot_cooldown
         self.frame = 0
         self.pos = pygame.Vector2(x, y)
+        self.s_shootrange = Shell.shootrange
+        
         if is_default_player:
             self.control_scheme = TankControlScheme.default()
             self.images = self.frames[:8]
@@ -60,7 +62,7 @@ class Tank(pygame.sprite.Sprite):
 
         if self.control_scheme.shoot_pressed():
             if self.seconds_from_last_shot >= self.shoot_cooldown:
-                self.shoot(self.s_speed)
+                self.shoot(self.s_speed, self.s_shootrange)
                 self.seconds_from_last_shot = 0
                 return
 
@@ -95,8 +97,8 @@ class Tank(pygame.sprite.Sprite):
                         sprite.kill()
                         return
                     ###################################
-                    if (isinstance(sprite, GridSpriteBase) and sprite.range):
-                        Shell.shootrange += 50
+                    if (isinstance(sprite, GridSpriteBase) and sprite.s_shootrange):
+                        self.s_shootrange += 70
                         sprite.kill()
                         return
                     #######################################33
@@ -124,7 +126,7 @@ class Tank(pygame.sprite.Sprite):
     def speedup(self) -> None:
             self.speed = self.speed + 30
 
-    def shoot(self, s_speed: int) -> None:
+    def shoot(self, s_speed: int, s_shootrange:int) -> None:
         """샷 초기화 방법"""
         off = self.shell_spawn_offset
         pos = None
@@ -136,7 +138,7 @@ class Tank(pygame.sprite.Sprite):
             pos = self.pos.x - off, self.pos.y + self.rect.h / 2
         elif self.direction == EAST:
             pos = self.pos.x + self.rect.w + off, self.pos.y + self.rect.h / 2
-        Shell(s_speed, *pos, self.direction, *self.groups())
+        Shell(s_speed, s_shootrange, *pos, self.direction, *self.groups())
         self.shoot_sound.play()
     
     def mirror_shoot(self, s_speed: int) -> None:
