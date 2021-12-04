@@ -2,14 +2,14 @@ import os.path
 import pygame
 import tanks.grid as grid
 from tanks.constants import MAP_SIZE
-from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Speedup, Shells, Rainbow, Ghost, shell_Speedup,Shell,Range
+from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Speedup, Shells, Rainbow, Ghost, shell_Speedup,Shell, Coins,Coin
 from tanks.ui import ScreenMessage, font_medium
 from tanks.scenes import load_scene, unload_current_scene, SceneBase
 from typing import List
 from tanks.constants import SCREEN_SIZE
 from tanks.ui import TextButton, Label, font_medium, font_small
 
-class ModeType(SceneBase):
+class Coinmode(SceneBase):
     """Сцена уровня"""
     score_to_win = 3
     
@@ -23,13 +23,14 @@ class ModeType(SceneBase):
         self.game_finished = False
 
         level_map = [list(line.rstrip('\n')) for line in open(os.path.join('modemap', filename))]
+
         if(len(level_map[-1])<10):
             Shell.shootrange=int("".join(level_map[-1]))
             del level_map[-1]
         else:
             Shell.shootrange=100000
-            ##########
-        blocks = [BrickWall, Bush, ConcreteWall, Water, Spike, Speedup, Rainbow, Ghost, shell_Speedup,Range]
+
+        blocks = [BrickWall, Bush, ConcreteWall, Water, Spike, Speedup, Rainbow, Ghost, shell_Speedup,Coin,Coins]
         for row in range(len(level_map)):
             for col in range(len(level_map[row])):
                 for block in blocks:
@@ -53,7 +54,7 @@ class ModeType(SceneBase):
             if not self.end_message.alive():
                 if not self.game_finished:
                     unload_current_scene()
-                    load_scene(ModeType(self.filename, self.score))
+                    load_scene(Coinmode(self.filename, self.score))
                 else:
                     unload_current_scene()
             return

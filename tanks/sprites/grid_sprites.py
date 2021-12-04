@@ -57,6 +57,8 @@ class Spike(GridSpriteBase):
 class Mirror(GridSpriteBase):
     sheet = load_image('mirror.png')
     char = '+'
+    shell_obstacle = True
+    mirroring = True
     
 class Lava(GridSpriteBase):
     sheet = load_image('lava.png')
@@ -111,3 +113,16 @@ class Ghost(GridSpriteBase):
     shell_obstacle = False
     die_obstacle = True
 
+class Coin(GridSpriteBase):
+    sheet = load_image('dollar.png')
+    char = '@'
+    tank_obstacle = False
+    shell_obstacle = False
+    pointup = True
+
+class Coins(GridSpriteBase):
+    sheet = load_image('dollars.png')
+    char = '^'
+    tank_obstacle = False
+    shell_obstacle = False
+    pointup = True
