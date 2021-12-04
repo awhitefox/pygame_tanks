@@ -1,17 +1,26 @@
 import os.path
 import pygame
+from pygame import Surface, surface
 import tanks.grid as grid
 from tanks.constants import MAP_SIZE
-from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Speedup, Shells, Rainbow, Ghost, shell_Speedup,Shell, Coins,Coin
+from tanks.sprites import tank, ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Speedup, Shells, Rainbow, Ghost, shell_Speedup,Shell, Coins,Coin
 from tanks.ui import ScreenMessage, font_medium
 from tanks.scenes import load_scene, unload_current_scene, SceneBase
 from typing import List
 from tanks.constants import SCREEN_SIZE
 from tanks.ui import TextButton, Label, font_medium, font_small
+import time
+
+
+FPSCLOCK = pygame.time.Clock()
+
+WHITE = (255, 255, 255)
+
 
 class Coinmode(SceneBase):
     """Сцена уровня"""
     score_to_win = 3
+    point = 0
     
     def __init__(self, filename: str, score: List[int] = None):
         """Инициализирует новую сцену уровня, построенную по карте из указанного файла.
@@ -83,10 +92,21 @@ class Coinmode(SceneBase):
             self.end_message = ScreenMessage(end_message_text, font_medium, 3, self.all_sprites)
             return
 
+
+
     def draw(self, surface: pygame.Surface) -> None:
         surface.fill((116, 116, 116))  # gray
         pygame.draw.rect(surface, 'black', grid.get_rect())
         super().draw(surface)
+
+        scorefont1 = pygame.font.SysFont("arial", 25, True, False)
+        scorefont2 = pygame.font.SysFont("arial", 25, True, False)
+        mess_score1 = scorefont1.render("player1: " + str(self.tank1.point), True, WHITE) 
+        mess_score2 = scorefont2.render("player2: " + str(self.tank2.point), True, WHITE) 
+        surface.blit(mess_score1, (50, 50))
+        surface.blit(mess_score2, (650, 50))
+        pygame.display.update()
+        FPSCLOCK.tick(60)
 
     @staticmethod
     def get_available() -> List[str]:
