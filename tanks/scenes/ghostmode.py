@@ -11,7 +11,7 @@ from tanks.constants import SCREEN_SIZE
 from tanks.images import load_image
 from typing import List
 from tanks.scenes.manager import update_and_draw_current_scene, load_scene, unload_current_scene
-from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Speedup, Shells, Rainbow, Ghost
+from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Speedup, Shells, Rainbow, Ghost, Shell
 from tanks.scenes import load_scene, unload_current_scene, SceneBase, Level
 
 class GhostMode(SceneBase):
@@ -24,6 +24,8 @@ class GhostMode(SceneBase):
       self.game_finished = False
       
       level_map = [list(line.rstrip('\n')) for line in open(os.path.join('modemap', filename))]
+      
+            
       blocks = [BrickWall, Bush, ConcreteWall, Water, Spike, Speedup, Rainbow, Ghost]
       for row in range(len(level_map)):
        for col in range(len(level_map[row])):

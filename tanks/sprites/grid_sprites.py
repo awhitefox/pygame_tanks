@@ -13,8 +13,9 @@ class GridSpriteBase(pygame.sprite.Sprite):
     tank_obstacle = True
     shell_obstacle = True
     die_obstacle = False
-    speed_up = False
-    s_speedup = False
+    speed_up = False  
+    s_speedup = False  
+    range = False
     layer = 0
 
     def __init__(self, grid_x: int, grid_y: int, *groups: pygame.sprite.Group):
@@ -87,6 +88,14 @@ class shell_Speedup(GridSpriteBase):
     shell_obstacle = False
     s_speedup = True
 
+class Range(GridSpriteBase):
+    sheet = load_image('plus.png')
+    char = 'k'    
+    layer = 0
+    tank_obstacle = False
+    shell_obstacle = False
+    range = True
+    
 class Shells(GridSpriteBase):
     sheet = load_image('shells.png')
     char = '>'

@@ -2,7 +2,7 @@ import os.path
 import pygame
 import tanks.grid as grid
 from tanks.constants import MAP_SIZE
-from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Speedup, Shells, Rainbow, Ghost, shell_Speedup
+from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Speedup, Shells, Rainbow, Ghost, shell_Speedup,Shell,Range
 from tanks.ui import ScreenMessage, font_medium
 from tanks.scenes import load_scene, unload_current_scene, SceneBase
 from typing import List
@@ -22,7 +22,15 @@ class Level(SceneBase):
         self.game_finished = False
 
         level_map = [list(line.rstrip('\n')) for line in open(os.path.join('levels', filename))]
-        blocks = [BrickWall, Bush, ConcreteWall, Water, Spike, Speedup, Shells, Rainbow, Ghost, shell_Speedup]
+        #####################
+        print(level_map[-1])
+        if(len(level_map[-1])<10):
+            Shell.shootrange=int("".join(level_map[-1]))
+            del level_map[-1]
+        else:
+            Shell.shootrange=100000
+        #####################
+        blocks = [BrickWall, Bush, ConcreteWall, Water, Spike, Speedup, Shells, Rainbow, Ghost, shell_Speedup,Range]
         for row in range(len(level_map)):
             for col in range(len(level_map[row])):
                 for block in blocks:

@@ -11,6 +11,7 @@ class Shell(pygame.sprite.Sprite):
     sheet = load_image('shell.png')
     speed = 400
     layer = 1
+    shootrange=10000 #######################
 
     def __init__(self, s_speed: int, x: float, y: float, direction: int, *groups: pygame.sprite.Group):
         super().__init__(*groups)
@@ -36,9 +37,22 @@ class Shell(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.sheet, rotate)
         self.rect.size = self.image.get_size()
         self.pos = pygame.Vector2(self.rect.x, self.rect.y)
+        
+        #######################
+        self.initalpos = pygame.Vector2(self.rect.x, self.rect.y)
 
     def update(self) -> None:
         self.pos += self.vector_velocity * delta_time()
+        
+        #######################
+        distx=abs(self.pos.x-self.initalpos.x)
+        disty=abs(self.pos.y-self.initalpos.y)
+        print("def update(self) -> None:",distx,disty)
+        if(max(distx,disty)>Shell.shootrange):
+            self.kill()
+            return
+
+        
         self.rect.x = self.pos.x
         self.rect.y = self.pos.y
 

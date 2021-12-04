@@ -16,6 +16,8 @@ class Tank(pygame.sprite.Sprite):
     speed = 150
     s_speed = 400
 
+    
+
     #탱크 사운드, 이미지
     shoot_sound = load_sound('tank_fire.flac')
     explosion_sound = load_sound('tank_explosion.flac')
@@ -91,7 +93,12 @@ class Tank(pygame.sprite.Sprite):
                         self.s_speed += 50
                         sprite.kill()
                         return
-
+                    ###################################
+                    if (isinstance(sprite, GridSpriteBase) and sprite.range):
+                        Shell.shootrange += 50
+                        sprite.kill()
+                        return
+                    #######################################33
         if new_rect.x + self.rect.size[0] > field.right or new_rect.x < field.left \
                 or new_rect.y + self.rect.size[1] > field.bottom or new_rect.y < field.top:
             return
