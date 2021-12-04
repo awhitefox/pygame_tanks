@@ -16,7 +16,9 @@ class GridSpriteBase(pygame.sprite.Sprite):
     speed_up = False  
     s_speedup = False  
     range = False
+    pointup = False
     layer = 0
+
 
     def __init__(self, grid_x: int, grid_y: int, *groups: pygame.sprite.Group):
         super().__init__(*groups)
@@ -40,6 +42,8 @@ class Bush(GridSpriteBase):
     char = '*'
     tank_obstacle = False
     shell_obstacle = False
+    pointup = False
+    pointup2 = False
     layer = 2
 
 
@@ -125,4 +129,4 @@ class Coins(GridSpriteBase):
     char = '^'
     tank_obstacle = False
     shell_obstacle = False
-    pointup = True
+    pointup2 = True

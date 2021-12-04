@@ -105,6 +105,11 @@ class Tank(pygame.sprite.Sprite):
                         self.point += 10
                         print(self.point)
                         return
+                    if (isinstance(sprite, GridSpriteBase) and sprite.pointup2):
+                        sprite.kill()
+                        self.point += 30
+                        print(self.point)
+                        return
         if new_rect.x + self.rect.size[0] > field.right or new_rect.x < field.left \
                 or new_rect.y + self.rect.size[1] > field.bottom or new_rect.y < field.top:
             return

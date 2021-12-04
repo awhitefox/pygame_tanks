@@ -70,10 +70,10 @@ class Coinmode(SceneBase):
         super().update()
 
         finish_round = False
-        if not self.tank1.alive():
+        if not self.tank1.alive() or self.tank2.point >= 1000:
             self.score[1] += 1
             finish_round = True
-        if not self.tank2.alive():
+        if not self.tank2.alive() or self.tank1.point >= 1000:
             self.score[0] += 1
             finish_round = True
 

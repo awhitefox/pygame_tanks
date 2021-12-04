@@ -31,7 +31,7 @@ class Level(SceneBase):
         else:
             Shell.shootrange=100000
         #####################
-        blocks = [BrickWall, Bush, ConcreteWall, Water, Spike, Speedup, Shells, Rainbow, Ghost, shell_Speedup, Mirror, Shell, Coin, Coins, Range]
+        blocks = [BrickWall, Bush, ConcreteWall, Water, Spike, Speedup, Shells, Rainbow, Ghost, shell_Speedup, Mirror, Coin, Coins, Range]
         for row in range(len(level_map)):
             for col in range(len(level_map[row])):
                 for block in blocks:
