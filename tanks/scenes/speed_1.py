@@ -2,14 +2,13 @@ import os.path
 import pygame
 import tanks.grid as grid
 from tanks.constants import MAP_SIZE
-
-from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Speedup, Shells, Rainbow, Ghost, shell_Speedup, Mirror, Shell, Coins, Coin, Range, Lava, Wood
+from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Lava, Wood
 from tanks.ui import ScreenMessage, font_medium
 from tanks.scenes import load_scene, unload_current_scene, SceneBase
 from typing import List
 
 
-class Level(SceneBase):
+class Speed1(SceneBase):
     """Сцена уровня"""
     score_to_win = 3
 
@@ -23,15 +22,7 @@ class Level(SceneBase):
         self.game_finished = False
 
         level_map = [list(line.rstrip('\n')) for line in open(os.path.join('levels', filename))]
-        #####################
-        print(level_map[-1])
-        if(len(level_map[-1])<10):
-            Shell.shootrange=int("".join(level_map[-1]))
-            del level_map[-1]
-        else:
-            Shell.shootrange=100000
-        #####################
-        blocks = [BrickWall, Bush, ConcreteWall, Water, Spike, Speedup, Shells, Rainbow, Ghost, shell_Speedup,Range,Lava,Wood]
+        blocks = [BrickWall, Bush, ConcreteWall, Water, Spike, Lava, Wood]
         for row in range(len(level_map)):
             for col in range(len(level_map[row])):
                 for block in blocks:
@@ -41,6 +32,10 @@ class Level(SceneBase):
         grid_x = MAP_SIZE[0] // 2 - 1
         self.tank1 = Tank(*grid.cell_to_screen(grid_x, MAP_SIZE[1] - 2), True, self.all_sprites)
         self.tank2 = Tank(*grid.cell_to_screen(grid_x, 0), False, self.all_sprites)
+
+        Tank.speed = 225
+        Tank.shoot_cooldown = 0.75
+        Tank.s_speed = 600
 
         self.start_message = ScreenMessage("Ready!", font_medium, 2, self.all_sprites)
         self.end_message = None
@@ -54,7 +49,7 @@ class Level(SceneBase):
             if not self.end_message.alive():
                 if not self.game_finished:
                     unload_current_scene()
-                    load_scene(Level(self.filename, self.score))
+                    load_scene(Speed1(self.filename, self.score))
                 else:
                     unload_current_scene()
             return

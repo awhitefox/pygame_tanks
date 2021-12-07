@@ -3,7 +3,7 @@ from tanks.input import mouse_keys_just_pressed
 
 
 class TextButton(pygame.sprite.Sprite):
-    """Элемент UI, отображает строку текста на экране и реагирует на нажатия."""
+    """UI 요소, 화면에 텍스트 문자열을 표시하고 누름에 반응합니다"""
 
     def __init__(self, center_x: float, center_y: float, text: str, font: pygame.font.Font,
                  *groups: pygame.sprite.Group):

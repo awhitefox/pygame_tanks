@@ -2,17 +2,17 @@ import os.path
 import pygame
 import tanks.grid as grid
 from tanks.constants import MAP_SIZE
-
-from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Speedup, Shells, Rainbow, Ghost, shell_Speedup, Mirror, Shell, Coins, Coin, Range, Lava, Wood
+from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Speedup, Shells, Rainbow, Ghost, shell_Speedup,Shell,Range, Lava, Wood
 from tanks.ui import ScreenMessage, font_medium
 from tanks.scenes import load_scene, unload_current_scene, SceneBase
 from typing import List
+from tanks.constants import SCREEN_SIZE
+from tanks.ui import TextButton, Label, font_medium, font_small
 
-
-class Level(SceneBase):
+class ModeType(SceneBase):
     """Сцена уровня"""
     score_to_win = 3
-
+    
     def __init__(self, filename: str, score: List[int] = None):
         """Инициализирует новую сцену уровня, построенную по карте из указанного файла.
         Поиск файла происходит в папке ./levels/"""
@@ -22,16 +22,16 @@ class Level(SceneBase):
         self.score = score if score else [0, 0]
         self.game_finished = False
 
-        level_map = [list(line.rstrip('\n')) for line in open(os.path.join('levels', filename))]
-        #####################
+        level_map = [list(line.rstrip('\n')) for line in open(os.path.join('modemap', filename))]
+        ################################
         print(level_map[-1])
         if(len(level_map[-1])<10):
             Shell.shootrange=int("".join(level_map[-1]))
             del level_map[-1]
         else:
             Shell.shootrange=100000
-        #####################
-        blocks = [BrickWall, Bush, ConcreteWall, Water, Spike, Speedup, Shells, Rainbow, Ghost, shell_Speedup,Range,Lava,Wood]
+            #################################
+        blocks = [BrickWall, Bush, ConcreteWall, Water, Spike, Speedup, Rainbow, Ghost, shell_Speedup,Range, Lava, Wood]
         for row in range(len(level_map)):
             for col in range(len(level_map[row])):
                 for block in blocks:
@@ -39,6 +39,7 @@ class Level(SceneBase):
                         block(col, row, self.all_sprites)
 
         grid_x = MAP_SIZE[0] // 2 - 1
+
         self.tank1 = Tank(*grid.cell_to_screen(grid_x, MAP_SIZE[1] - 2), True, self.all_sprites)
         self.tank2 = Tank(*grid.cell_to_screen(grid_x, 0), False, self.all_sprites)
 
@@ -54,7 +55,7 @@ class Level(SceneBase):
             if not self.end_message.alive():
                 if not self.game_finished:
                     unload_current_scene()
-                    load_scene(Level(self.filename, self.score))
+                    load_scene(ModeType(self.filename, self.score))
                 else:
                     unload_current_scene()
             return
@@ -92,5 +93,6 @@ class Level(SceneBase):
     def get_available() -> List[str]:
         """Возвращает список названий доступных для загрузки уровней."""
         def check(f):
-            return os.path.isfile(os.path.join('levels', f)) and f.endswith('.txt')
-        return list(map(lambda x: x[:-4], filter(check, os.listdir('levels'))))
+            return os.path.isfile(os.path.join('modemap', f)) and f.endswith('.txt')
+        return list(map(lambda x: x[:-4], filter(check, os.listdir('modemap'))))
+

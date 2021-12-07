@@ -11,10 +11,16 @@ class Shell(pygame.sprite.Sprite):
     sheet = load_image('shell.png')
     speed = 400
     layer = 1
+    shootrange=10000
 
-    def __init__(self, x: float, y: float, direction: int, *groups: pygame.sprite.Group):
+    def __init__(self, s_speed: int, s_shootrange:int, x: float, y: float, direction: int, *groups: pygame.sprite.Group):
         super().__init__(*groups)
         rotate = 0
+        self.x = x
+        self.y = y
+        self.direct = direction
+        self.speed = s_speed
+        self.shootrange = s_shootrange
         self.vector_velocity = direction_to_vector(direction, self.speed)
         size = self.sheet.get_size()
         self.rect = pygame.Rect(0, 0, 0, 0)
@@ -35,9 +41,18 @@ class Shell(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.sheet, rotate)
         self.rect.size = self.image.get_size()
         self.pos = pygame.Vector2(self.rect.x, self.rect.y)
+        self.initalpos = pygame.Vector2(self.rect.x, self.rect.y)
 
     def update(self) -> None:
         self.pos += self.vector_velocity * delta_time()
+        distx=abs(self.pos.x-self.initalpos.x)
+        disty=abs(self.pos.y-self.initalpos.y)
+        print("def update(self) -> None:",distx,disty)
+        if(max(distx,disty)>self.shootrange):
+            self.kill()
+            return
+
+        
         self.rect.x = self.pos.x
         self.rect.y = self.pos.y
 
@@ -61,7 +76,23 @@ class Shell(pygame.sprite.Sprite):
                         elif isinstance(sprite, Shell):
                             sprite.kill()
                             self.kill()
+                        # if isinstance(sprite, GridSpriteBase) and sprite.mirroring:
+                        #     if self.direct == NORTH:
+                        #         self.rect.center = self.x - self.size[0] / 2, self.y
+                        #         self.rotate = 180
+                        #     if self.direct == SOUTH:
+                        #         self.rect.center = self.x - self.size[0] / 2, self.y - self.size[1]
+                        #     if self.direct == EAST:
+                        #         self.rect.center = self.x - self.size[1], self.y - self.size[0] / 2
+                        #         self.rotate = 90
+                        #     if self.direct == WEST:
+                        #         self.rect.center = self.x, self.y - self.size[0] / 2
+                        #         self.rotate = -90
+                            
+
 
     def kill(self) -> None:
         ShellExplosion(*self.pos, *self.groups())
         super().kill()
+
+

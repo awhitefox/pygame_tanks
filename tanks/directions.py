@@ -7,7 +7,7 @@ WEST = 4
 
 
 def direction_to_vector(direction: int, speed: float = 1) -> Vector2:
-    """Преобразует направление в вектор"""
+    """이전 프레임에서 경과한 시간(초)을(를) 반환합니다."""
     if direction == NORTH:
         return Vector2(0, -speed)
     elif direction == EAST:
