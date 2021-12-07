@@ -2,7 +2,8 @@ import os.path
 import pygame
 import tanks.grid as grid
 from tanks.constants import MAP_SIZE
-from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Speedup, Shells, Rainbow, Ghost, shell_Speedup,Shell,Range,Lava,Wood
+
+from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Speedup, Shells, Rainbow, Ghost, shell_Speedup, Mirror, Shell, Coins, Coin, Range, Lava, Wood
 from tanks.ui import ScreenMessage, font_medium
 from tanks.scenes import load_scene, unload_current_scene, SceneBase
 from typing import List
