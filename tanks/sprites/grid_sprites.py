@@ -13,9 +13,12 @@ class GridSpriteBase(pygame.sprite.Sprite):
     tank_obstacle = True
     shell_obstacle = True
     die_obstacle = False
-    speed_up = False
-    s_speedup = False
+    speed_up = False  
+    s_speedup = False  
+    s_shootrange = False
+    pointup = False
     layer = 0
+
 
     def __init__(self, grid_x: int, grid_y: int, *groups: pygame.sprite.Group):
         super().__init__(*groups)
@@ -39,6 +42,8 @@ class Bush(GridSpriteBase):
     char = '*'
     tank_obstacle = False
     shell_obstacle = False
+    pointup = False
+    pointup2 = False
     layer = 2
 
 
@@ -56,6 +61,8 @@ class Spike(GridSpriteBase):
 class Mirror(GridSpriteBase):
     sheet = load_image('mirror.png')
     char = '+'
+    shell_obstacle = True
+    mirroring = True
     
 class Lava(GridSpriteBase):
     sheet = load_image('lava.png')
@@ -70,6 +77,8 @@ class Wood(GridSpriteBase):
     layer = 0
     tank_obstacle = False
     shell_obstacle = False
+    pointup = False
+    pointup2 = False
 
 class Speedup(GridSpriteBase):
     sheet = load_image('speedup.png')
@@ -87,6 +96,14 @@ class shell_Speedup(GridSpriteBase):
     shell_obstacle = False
     s_speedup = True
 
+class Range(GridSpriteBase):
+    sheet = load_image('plus.png')
+    char = 'k'    
+    layer = 0
+    tank_obstacle = False
+    shell_obstacle = False
+    s_shootrange = True
+    
 class Shells(GridSpriteBase):
     sheet = load_image('shells.png')
     char = '>'
@@ -102,3 +119,16 @@ class Ghost(GridSpriteBase):
     shell_obstacle = False
     die_obstacle = True
 
+class Coin(GridSpriteBase):
+    sheet = load_image('dollar.png')
+    char = '@'
+    tank_obstacle = False
+    shell_obstacle = False
+    pointup = True
+
+class Coins(GridSpriteBase):
+    sheet = load_image('dollars.png')
+    char = '^'
+    tank_obstacle = False
+    shell_obstacle = False
+    pointup2 = True

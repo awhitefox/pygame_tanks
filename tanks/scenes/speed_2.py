@@ -2,17 +2,16 @@ import os.path
 import pygame
 import tanks.grid as grid
 from tanks.constants import MAP_SIZE
-from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Shell
+from tanks.sprites import ConcreteWall, BrickWall, Bush, Water, Spike, Tank, Lava, Wood
 from tanks.ui import ScreenMessage, font_medium
 from tanks.scenes import load_scene, unload_current_scene, SceneBase
 from typing import List
-from tanks.constants import SCREEN_SIZE
-from tanks.ui import TextButton, Label, font_medium, font_small
 
-class Speed1(SceneBase):
+
+class Speed2(SceneBase):
     """Сцена уровня"""
     score_to_win = 3
-    
+
     def __init__(self, filename: str, score: List[int] = None):
         """Инициализирует новую сцену уровня, построенную по карте из указанного файла.
         Поиск файла происходит в папке ./levels/"""
@@ -22,8 +21,8 @@ class Speed1(SceneBase):
         self.score = score if score else [0, 0]
         self.game_finished = False
 
-        level_map = [list(line.rstrip('\n')) for line in open(os.path.join('modemap', filename))]
-        blocks = [BrickWall, Bush, ConcreteWall, Water, Spike]
+        level_map = [list(line.rstrip('\n')) for line in open(os.path.join('levels', filename))]
+        blocks = [BrickWall, Bush, ConcreteWall, Water, Spike, Lava, Wood]
         for row in range(len(level_map)):
             for col in range(len(level_map[row])):
                 for block in blocks:
@@ -31,16 +30,14 @@ class Speed1(SceneBase):
                         block(col, row, self.all_sprites)
 
         grid_x = MAP_SIZE[0] // 2 - 1
-
         self.tank1 = Tank(*grid.cell_to_screen(grid_x, MAP_SIZE[1] - 2), True, self.all_sprites)
         self.tank2 = Tank(*grid.cell_to_screen(grid_x, 0), False, self.all_sprites)
 
-        Tank.speed = 225
-        Tank.shoot_cooldown = 0.75
-        Shell.speed = 600
-        
+        Tank.speed = 300
+        Tank.shoot_cooldown = 0.5
+        Tank.s_speed = 800
 
-        self.start_message = ScreenMessage("Приготовиться!", font_medium, 2, self.all_sprites)
+        self.start_message = ScreenMessage("Ready!", font_medium, 2, self.all_sprites)
         self.end_message = None
 
     def update(self) -> None:
@@ -52,7 +49,7 @@ class Speed1(SceneBase):
             if not self.end_message.alive():
                 if not self.game_finished:
                     unload_current_scene()
-                    load_scene(Speed1(self.filename, self.score))
+                    load_scene(Speed2(self.filename, self.score))
                 else:
                     unload_current_scene()
             return
@@ -68,13 +65,13 @@ class Speed1(SceneBase):
 
         if finish_round:
             if self.score == [self.score_to_win, self.score_to_win]:
-                end_message_text = 'Ничья!'
+                end_message_text = 'Draw!'
                 self.game_finished = True
             elif self.score[0] == self.score_to_win:
-                end_message_text = 'Игрок 1 победил!'
+                end_message_text = 'Player 1 win!'
                 self.game_finished = True
             elif self.score[1] == self.score_to_win:
-                end_message_text = 'Игрок 2 победил!'
+                end_message_text = 'Player 2 win!'
                 self.game_finished = True
             else:
                 end_message_text = f'{self.score[0]} : {self.score[1]}'
@@ -90,6 +87,5 @@ class Speed1(SceneBase):
     def get_available() -> List[str]:
         """Возвращает список названий доступных для загрузки уровней."""
         def check(f):
-            return os.path.isfile(os.path.join('modemap', f)) and f.endswith('.txt')
-        return list(map(lambda x: x[:-4], filter(check, os.listdir('modemap'))))
-
+            return os.path.isfile(os.path.join('levels', f)) and f.endswith('.txt')
+        return list(map(lambda x: x[:-4], filter(check, os.listdir('levels'))))
